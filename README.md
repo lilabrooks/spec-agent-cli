@@ -107,6 +107,8 @@ agent host --basic
 agent host --detailed
 ```
 
+See [docs/host-cli-generator-test.md](docs/host-cli-generator-test.md) for the full step-by-step test flow.
+
 ## Skill workflow
 
 Agent skills live in `skills/agent/`. They describe how the agent should work while implementing a CLI spec.
