@@ -100,6 +100,13 @@ agent spec check specs/cli/example.md
 agent run --spec example "Implement this CLI feature"
 ```
 
+The repo includes a concrete generated-CLI fixture:
+
+```bash
+agent host --basic
+agent host --detailed
+```
+
 ## Skill workflow
 
 Agent skills live in `skills/agent/`. They describe how the agent should work while implementing a CLI spec.
