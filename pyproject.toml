@@ -31,6 +31,16 @@ my-cli = "agent_cli.commands.my_cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/agent_cli"]
 
+# Ship the default specs and skills inside the package so the installed CLI
+# works from any directory (e.g. `pipx install` from GitHub). A checkout's own
+# specs/cli and skills/agent still take precedence when present.
+[tool.hatch.build.targets.wheel.force-include]
+"specs" = "agent_cli/_bundled/specs"
+"skills" = "agent_cli/_bundled/skills"
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "specs", "skills", "docs", "README.md", "LICENSE"]
+
 [tool.pytest.ini_options]
 addopts = "-q --strict-config --strict-markers"
 pythonpath = ["src"]
@@ -81,3 +91,4 @@ source = ["agent_cli"]
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
+fail_under = 70

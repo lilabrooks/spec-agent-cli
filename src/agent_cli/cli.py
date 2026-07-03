@@ -4,12 +4,11 @@ from pathlib import Path
 
 from agent_cli.config.settings import Settings
 from agent_cli.core.parser import FriendlyArgumentParser
+from agent_cli.providers.registry import available_providers
+from agent_cli.resources import default_skill_root, default_spec_root
 from agent_cli.runtime.factory import build_agent
 from agent_cli.skills.loader import list_skills, load_skill, resolve_skill, validate_skill
 from agent_cli.specs.loader import list_specs, load_spec, resolve_spec, validate_spec
-
-DEFAULT_SPEC_ROOT = Path("specs/cli")
-DEFAULT_SKILL_ROOT = Path("skills/agent")
 
 
 def run(
@@ -23,11 +22,14 @@ def run(
     agent = build_agent(settings)
     context_blocks: list[str] = []
     if spec is not None:
-        spec_path = resolve_spec(spec, DEFAULT_SPEC_ROOT)
+        spec_path = resolve_spec(spec, default_spec_root())
         context_blocks.append(load_spec(spec_path).to_agent_context())
 
-    skill_paths = list_skills(DEFAULT_SKILL_ROOT) if all_skills else []
-    skill_paths.extend(resolve_skill(skill, DEFAULT_SKILL_ROOT) for skill in skills or [])
+    skill_root = default_skill_root()
+    skill_paths = list_skills(skill_root) if all_skills else []
+    if all_skills and not skill_paths:
+        write_stderr_line(f"Warning: --all-skills found no skills under {skill_root}.")
+    skill_paths.extend(resolve_skill(skill, skill_root) for skill in skills or [])
     for skill_path in skill_paths:
         context_blocks.append(load_skill(skill_path).to_agent_context())
 
@@ -76,7 +78,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     spec_list_parser = spec_subparsers.add_parser("list", help="List available CLI specs.")
     spec_list_parser.add_argument(
-        "--root", default=str(DEFAULT_SPEC_ROOT), help="Spec root folder."
+        "--root", default=str(default_spec_root()), help="Spec root folder."
     )
 
     spec_show_parser = spec_subparsers.add_parser(
@@ -85,13 +87,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     spec_show_parser.add_argument("spec", help="Spec path or slug.")
     spec_show_parser.add_argument(
-        "--root", default=str(DEFAULT_SPEC_ROOT), help="Spec root folder."
+        "--root", default=str(default_spec_root()), help="Spec root folder."
     )
 
     spec_check_parser = spec_subparsers.add_parser("check", help="Validate one spec or all specs.")
     spec_check_parser.add_argument("spec", nargs="?", help="Spec path or slug.")
     spec_check_parser.add_argument(
-        "--root", default=str(DEFAULT_SPEC_ROOT), help="Spec root folder."
+        "--root", default=str(default_spec_root()), help="Spec root folder."
     )
 
     skill_parser = subparsers.add_parser("skill", help="Work with Markdown agent skills.")
@@ -103,7 +105,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     skill_list_parser = skill_subparsers.add_parser("list", help="List available agent skills.")
     skill_list_parser.add_argument(
-        "--root", default=str(DEFAULT_SKILL_ROOT), help="Skill root folder."
+        "--root", default=str(default_skill_root()), help="Skill root folder."
     )
 
     skill_show_parser = skill_subparsers.add_parser(
@@ -112,7 +114,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     skill_show_parser.add_argument("skill", help="Skill path or slug.")
     skill_show_parser.add_argument(
-        "--root", default=str(DEFAULT_SKILL_ROOT), help="Skill root folder."
+        "--root", default=str(default_skill_root()), help="Skill root folder."
     )
 
     skill_check_parser = skill_subparsers.add_parser(
@@ -121,7 +123,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     skill_check_parser.add_argument("skill", nargs="?", help="Skill path or slug.")
     skill_check_parser.add_argument(
-        "--root", default=str(DEFAULT_SKILL_ROOT), help="Skill root folder."
+        "--root", default=str(default_skill_root()), help="Skill root folder."
     )
 
     subparsers.add_parser("providers", help="Show installed provider adapters.")
@@ -152,7 +154,7 @@ def main(argv: list[str] | None = None) -> int:
             return handle_skill_command(args)
 
         if args.command == "providers":
-            write_stdout_line("echo")
+            write_stdout_line("\n".join(available_providers()))
             return 0
     except FileNotFoundError as error:
         parser.exit(
@@ -174,6 +176,10 @@ def main(argv: list[str] | None = None) -> int:
 
 def write_stdout_line(value: object) -> None:
     sys.stdout.write(f"{value}\n")
+
+
+def write_stderr_line(value: object) -> None:
+    sys.stderr.write(f"{value}\n")
 
 
 def handle_spec_command(args: argparse.Namespace) -> int:

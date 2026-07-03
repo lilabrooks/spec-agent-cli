@@ -21,6 +21,10 @@ A Python 3.12+ starter project for building spec-driven CLI generators. It combi
 
 The default provider is `echo`, so the project runs locally without credentials or network access.
 
+## Flow
+
+![Spec Agent CLI flow](docs/assets/spec-agent-cli-flow.svg)
+
 ## Quick Start
 
 Install the CLI locally with pip:
@@ -47,19 +51,34 @@ agent providers
 my-cli --basic
 ```
 
-For a complete pipx and artifact guide, see [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md).
+The default specs and skills ship inside the package, so `agent spec` and `agent skill` work from any directory after install. For a complete pipx and artifact guide, see [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md).
+
+## Configuration
+
+Two environment variables adjust runtime behavior. They are read directly from the process environment; there is no `.env` auto-loading.
+
+- `AGENT_CLI_PROVIDER` sets the provider adapter (default `echo`). The `--provider` flag overrides it.
+- `AGENT_CLI_SYSTEM_PROMPT` sets the system prompt passed to the agent (default `You are a concise, practical assistant.`). The bundled `echo` provider ignores it; real provider adapters will use it.
+
+Export them before running, for example `AGENT_CLI_PROVIDER=echo agent providers`.
 
 ## Development Setup
 
-Create a virtual environment and install the development tools:
+Built and developed on Python 3.14.6. The project supports 3.12+, and CI runs against 3.12, 3.13, and 3.14. Use any interpreter in that range (`python3.14` shown here):
 
 ```bash
-python3.12 -m venv .venv
+python3.14 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
 ```
 
-Run the main checks:
+Run lint, type-check, and tests on the active interpreter with a single command:
+
+```bash
+make check
+```
+
+The underlying tools can also be run individually:
 
 ```bash
 pytest
@@ -67,6 +86,8 @@ ruff check .
 ruff format --check .
 mypy
 ```
+
+To run the full check across every supported Python version the way CI does, use `make check-all` (needs [uv](https://docs.astral.sh/uv/), which fetches the interpreters on demand). Save it for reproducing a version-specific failure that CI flags.
 
 Run the CLI locally:
 
@@ -88,6 +109,8 @@ Each spec should include:
 - `Outputs`
 - `Behavior`
 - `Acceptance tests`
+
+The installed package ships with default specs. A `specs/cli` folder in your current directory takes precedence, so a checkout or your own project can override them.
 
 Validate specs:
 
@@ -119,6 +142,8 @@ Python and CLI quality skills:
 - `cli-test-coverage`
 - `python-packaging-cli`
 
+As with specs, default skills ship inside the package, and a `skills/agent` folder in your current directory takes precedence.
+
 Skills are opt-in by default. Attach selected skills with a spec:
 
 ```bash
@@ -141,31 +166,6 @@ my-cli --detailed
 ```
 
 The fixture spec is [specs/cli/my-cli-details.md](specs/cli/my-cli-details.md). The step-by-step test guide is [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md).
-
-## Flow
-
-![Spec Agent CLI flow](docs/assets/spec-agent-cli-flow.svg)
-
-## Naming and Artifacts
-
-This repository has two important names:
-
-- Distribution package: `ai-agent-cli`
-- Installed commands: `agent` and `my-cli`
-
-Build artifacts use the distribution package name normalized for Python packaging. That is why `python -m build` creates files like:
-
-```text
-ai_agent_cli-0.1.0.tar.gz
-ai_agent_cli-0.1.0-py3-none-any.whl
-```
-
-That is expected. The installed commands remain:
-
-```bash
-agent providers
-my-cli --basic
-```
 
 ## Project Layout
 
@@ -192,25 +192,6 @@ my-cli --basic
 └── pyproject.toml          # Packaging, tools, and CLI entry points
 ```
 
-## Quality Standard
-
-Use pytest for behavior tests. Prefer function-level tests with fixtures such as `tmp_path`, `capsys`, and `monkeypatch`.
-
-Use Ruff for linting and formatting:
-
-```bash
-ruff check .
-ruff format .
-```
-
-Use mypy in strict mode for type checking:
-
-```bash
-mypy
-```
-
-Runtime code should stay dependency-free unless a spec requires a dependency. Development-only tools belong in the `dev` optional dependency group.
-
 ## Provider Design
 
 The project keeps provider details behind one small protocol:
@@ -223,7 +204,36 @@ class LanguageModel(Protocol):
 
 Agents receive a `LanguageModel` instance instead of constructing provider clients directly. That keeps the CLI, agent logic, tests, and future provider adapters loosely coupled.
 
-Add real model vendors under `src/agent_cli/providers/` by implementing `LanguageModel` and wiring the provider in `src/agent_cli/runtime/factory.py`.
+To add a real vendor, implement `LanguageModel` under `src/agent_cli/providers/` and register it in `src/agent_cli/providers/registry.py`. The factory, the unknown-provider error, and the `providers` command all read from that registry.
+
+## Naming and Artifacts
+
+This repository has two important names:
+
+- Distribution package: `ai-agent-cli`
+- Installed commands: `agent` and `my-cli`
+
+Build artifacts use the distribution package name normalized for Python packaging. That is why `python -m build` creates files like:
+
+```text
+ai_agent_cli-0.1.0.tar.gz
+ai_agent_cli-0.1.0-py3-none-any.whl
+```
+
+That is expected. The installed commands remain:
+
+```bash
+agent providers
+my-cli --basic
+```
+
+## Quality Standard
+
+Use pytest for behavior tests. Prefer function-level tests with fixtures such as `tmp_path`, `capsys`, and `monkeypatch`.
+
+Ruff handles linting and formatting, and mypy runs in strict mode. Run them together with `make check`, or individually as shown in [Development Setup](#development-setup).
+
+Runtime code should stay dependency-free unless a spec requires a dependency. Development-only tools belong in the `dev` optional dependency group.
 
 ## Additional Docs
 
@@ -233,3 +243,4 @@ Add real model vendors under `src/agent_cli/providers/` by implementing `Languag
 - [docs/skill-research.md](docs/skill-research.md)
 - [skills/README.md](skills/README.md)
 - [specs/README.md](specs/README.md)
+```

@@ -18,7 +18,7 @@ The Markdown parser lives in `core/markdown.py`. Specs and skills wrap that pars
 
 1. Create a module under `src/agent_cli/providers/`.
 2. Implement `LanguageModel`.
-3. Register it in `runtime/factory.py`.
+3. Register it in `providers/registry.py`. The factory, the unknown-provider error, and the `providers` command all read from that registry.
 4. Add focused tests for request mapping, response mapping, and error handling.
 
 Provider configuration should stay in `config/settings.py` or in provider-owned config types. Avoid reading environment variables deep inside agent code.
