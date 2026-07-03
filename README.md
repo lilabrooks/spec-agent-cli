@@ -1,4 +1,4 @@
-# AI agent CLI
+# Spec Agent CLI
 
 [![Tests](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml)
 [![Code quality](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml)
@@ -8,45 +8,34 @@
 ![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)
 ![pipx installable](https://img.shields.io/badge/pipx-installable-blue)
 
-A Python 3.12+ starter structure for building spec-driven CLI generators that use Markdown specs, reusable agent skills, and pluggable model providers without tying the app to one vendor, API, or model family.
+A Python 3.12+ starter project for building spec-driven CLI generators. It combines Markdown CLI specs, reusable agent skills, strict Python quality checks, and pluggable model providers without tying the application to one vendor, API, or model family.
 
-## Layout
+## What This Project Provides
 
-```text
-.
-├── src/agent_cli/
-│   ├── cli.py              # Command surface
-│   ├── agents/             # Agent behavior and orchestration
-│   ├── config/             # Settings and environment loading
-│   ├── core/               # Vendor-neutral contracts, shared types, Markdown parsing
-│   ├── providers/          # Model/provider adapters
-│   ├── skills/             # Markdown skill loading and validation
-│   ├── specs/              # Markdown spec loading and validation
-│   └── runtime/            # Composition root for wiring objects together
-├── skills/
-│   ├── agent/              # Agent working style skills
-│   └── templates/          # Reusable skill templates
-├── specs/
-│   ├── cli/                # CLI specs the agent can work from
-│   └── templates/          # Reusable spec templates
-├── tests/                  # Fast unit tests
-├── docs/                   # Design notes and operational docs
-└── pyproject.toml          # Packaging, tools, and CLI entry point
-```
+- A packaged Python CLI named `agent` for running spec-aware agent workflows.
+- A Markdown spec system under `specs/cli/` for describing CLIs before implementation.
+- Reusable agent skills under `skills/agent/` for implementation style, testing, packaging, and CLI UX.
+- A provider abstraction so model integrations can be swapped without changing command logic.
+- A generated fixture command named `my-cli` that proves the generator structure can produce an installable CLI.
+- Pytest, Ruff, mypy, coverage, packaging, and pipx-ready project configuration.
 
-## Quick start
+The default provider is `echo`, so the project runs locally without credentials or network access.
 
-Install as a CLI with pip:
+## Quick Start
+
+Install the CLI locally with pip:
 
 ```bash
 python -m pip install .
+agent providers
 agent run "Write a release note for version 0.1.0"
 ```
 
-Install as an isolated CLI with pipx:
+Install it as an isolated command with pipx:
 
 ```bash
 pipx install .
+agent providers
 agent run "Write a release note for version 0.1.0"
 ```
 
@@ -58,51 +47,154 @@ agent providers
 my-cli --basic
 ```
 
-Install for local development:
+For a complete pipx and artifact guide, see [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md).
+
+## Development Setup
+
+Create a virtual environment and install the development tools:
 
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
-agent run "Write a release note for version 0.1.0"
-agent spec check
-agent spec show example
-agent skill check
-agent skill list
+```
+
+Run the main checks:
+
+```bash
 pytest
 ruff check .
 ruff format --check .
 mypy
 ```
 
-The default provider is `echo`, so the CLI runs locally without credentials. The runtime path uses only the Python standard library. Add real model vendors under `src/agent_cli/providers/` by implementing `LanguageModel`.
+Run the CLI locally:
 
-## Naming
-
-This repo has two kinds of names:
-
-- Distribution package: `ai-agent-cli`
-- Installed commands: `agent` and `my-cli`
-
-Build artifacts use the distribution package name. That is why `python -m build` creates files like:
-
-```text
-ai_agent_cli-0.1.0.tar.gz
-ai_agent_cli-0.1.0-py3-none-any.whl
+```bash
+agent providers
+agent spec check
+agent skill check
 ```
 
-The generated fixture app is still installed and run as:
+## Spec Workflow
+
+Write CLI requirements as Markdown specs in `specs/cli/`. Use `specs/templates/cli-spec.md` as the starting point.
+
+Each spec should include:
+
+- `Purpose`
+- `Commands`
+- `Inputs`
+- `Outputs`
+- `Behavior`
+- `Acceptance tests`
+
+Validate specs:
+
+```bash
+agent spec check
+agent spec check my-cli-details
+```
+
+Attach a spec to an agent run:
+
+```bash
+agent run --spec my-cli-details "Implement this CLI feature"
+```
+
+## Skill Workflow
+
+Agent skills live in `skills/agent/`. They describe how the agent should work while implementing a CLI spec.
+
+Included skills adapted from `multica-ai/andrej-karpathy-skills`:
+
+- `think-before-coding`
+- `focused-implementation`
+- `goal-driven-execution`
+
+Python and CLI quality skills:
+
+- `python-code-quality`
+- `stdlib-cli-ux`
+- `cli-test-coverage`
+- `python-packaging-cli`
+
+Skills are opt-in by default. Attach selected skills with a spec:
+
+```bash
+agent run --spec my-cli-details --skill goal-driven-execution --skill stdlib-cli-ux "Implement this feature"
+```
+
+Attach every available skill:
+
+```bash
+agent run --spec my-cli-details --all-skills "Implement this feature"
+```
+
+## Generated CLI Fixture
+
+The repo includes a small generated CLI fixture named `my-cli`. It prints non-sensitive host machine details and exists as a test case for the generator structure.
 
 ```bash
 my-cli --basic
 my-cli --detailed
 ```
 
-See [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md) for GitHub, wheel, and local pipx install flows.
+The fixture spec is [specs/cli/my-cli-details.md](specs/cli/my-cli-details.md). The step-by-step test guide is [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md).
 
-## Quality standard
+## Flow
 
-Use pytest for all tests. Prefer function tests with fixtures such as `tmp_path`, `capsys`, and `monkeypatch`.
+![Spec Agent CLI flow](docs/assets/spec-agent-cli-flow.svg)
+
+## Naming and Artifacts
+
+This repository has two important names:
+
+- Distribution package: `ai-agent-cli`
+- Installed commands: `agent` and `my-cli`
+
+Build artifacts use the distribution package name normalized for Python packaging. That is why `python -m build` creates files like:
+
+```text
+ai_agent_cli-0.1.0.tar.gz
+ai_agent_cli-0.1.0-py3-none-any.whl
+```
+
+That is expected. The installed commands remain:
+
+```bash
+agent providers
+my-cli --basic
+```
+
+## Project Layout
+
+```text
+.
+├── src/agent_cli/
+│   ├── cli.py              # Main `agent` command surface
+│   ├── agents/             # Agent behavior and orchestration
+│   ├── commands/           # Generated or fixture CLI command modules
+│   ├── config/             # Settings and environment loading
+│   ├── core/               # Vendor-neutral contracts, shared types, Markdown parsing
+│   ├── providers/          # Model/provider adapters
+│   ├── runtime/            # Composition root for wiring objects together
+│   ├── skills/             # Markdown skill loading and validation
+│   └── specs/              # Markdown spec loading and validation
+├── skills/
+│   ├── agent/              # Agent working-style skills
+│   └── templates/          # Reusable skill templates
+├── specs/
+│   ├── cli/                # CLI specs the agent can work from
+│   └── templates/          # Reusable spec templates
+├── tests/                  # Fast unit tests
+├── docs/                   # Architecture, pipx, and fixture guides
+└── pyproject.toml          # Packaging, tools, and CLI entry points
+```
+
+## Quality Standard
+
+Use pytest for behavior tests. Prefer function-level tests with fixtures such as `tmp_path`, `capsys`, and `monkeypatch`.
 
 Use Ruff for linting and formatting:
 
@@ -117,72 +209,9 @@ Use mypy in strict mode for type checking:
 mypy
 ```
 
-Runtime code should stay dependency-free unless a spec requires a dependency. Development tools belong in the `dev` optional dependency group.
+Runtime code should stay dependency-free unless a spec requires a dependency. Development-only tools belong in the `dev` optional dependency group.
 
-## Spec workflow
-
-Put CLI build specs in `specs/cli/` using `specs/templates/cli-spec.md`.
-
-Each spec should include:
-
-- `Purpose`
-- `Commands`
-- `Inputs`
-- `Outputs`
-- `Behavior`
-- `Acceptance tests`
-
-The CLI can validate specs and attach one to an agent run:
-
-```bash
-agent spec check specs/cli/example.md
-agent run --spec example "Implement this CLI feature"
-```
-
-The repo includes a concrete generated-CLI fixture:
-
-```bash
-my-cli --basic
-my-cli --detailed
-```
-
-See [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md) for the full step-by-step test flow.
-
-## Flow
-
-![Spec Agent CLI flow](docs/assets/spec-agent-cli-flow.svg)
-
-## Skill workflow
-
-Agent skills live in `skills/agent/`. They describe how the agent should work while implementing a CLI spec.
-
-Included skills, adapted from `multica-ai/andrej-karpathy-skills`:
-
-- `think-before-coding`
-- `focused-implementation`
-- `goal-driven-execution`
-
-Python and CLI quality skills:
-
-- `python-code-quality`
-- `stdlib-cli-ux`
-- `cli-test-coverage`
-- `python-packaging-cli`
-
-Skills are opt-in per run. Attach selected skills with a spec:
-
-```bash
-agent skill check
-agent run --spec example --skill goal-driven-execution --skill stdlib-cli-ux "Implement this feature"
-```
-
-Or attach every available skill:
-
-```bash
-agent run --spec example --all-skills "Implement this feature"
-```
-
-## Design
+## Provider Design
 
 The project keeps provider details behind one small protocol:
 
@@ -192,6 +221,15 @@ class LanguageModel(Protocol):
         ...
 ```
 
-Agents receive a `LanguageModel` instance instead of constructing clients directly. That keeps the CLI, agent logic, tests, and future provider adapters loosely coupled.
+Agents receive a `LanguageModel` instance instead of constructing provider clients directly. That keeps the CLI, agent logic, tests, and future provider adapters loosely coupled.
 
-Markdown parsing is shared through `agent_cli.core.markdown`, while specs and skills keep their own validation rules. That gives both document types the same frontmatter, title, section, list, and path-resolution behavior without mixing their responsibilities.
+Add real model vendors under `src/agent_cli/providers/` by implementing `LanguageModel` and wiring the provider in `src/agent_cli/runtime/factory.py`.
+
+## Additional Docs
+
+- [docs/architecture.md](docs/architecture.md)
+- [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md)
+- [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md)
+- [docs/skill-research.md](docs/skill-research.md)
+- [skills/README.md](skills/README.md)
+- [specs/README.md](specs/README.md)
