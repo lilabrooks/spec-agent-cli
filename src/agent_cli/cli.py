@@ -2,10 +2,6 @@ import argparse
 import sys
 from pathlib import Path
 
-# Host fixture: this import supports the generated-CLI test command.
-# For an actual project, comment out this import plus the matching parser
-# and dispatch blocks marked below.
-from agent_cli.commands.host import collect_host_snapshot, render_host_details
 from agent_cli.config.settings import Settings
 from agent_cli.runtime.factory import build_agent
 from agent_cli.skills.loader import list_skills, load_skill, resolve_skill, validate_skill
@@ -105,18 +101,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--root", default=str(DEFAULT_SKILL_ROOT), help="Skill root folder."
     )
 
-    # Host fixture: comment out this parser block for an actual project.
-    host_parser = subparsers.add_parser("host", help="Print non-sensitive host machine details.")
-    host_modes = host_parser.add_mutually_exclusive_group(required=True)
-    host_modes.add_argument(
-        "--basic", action="store_true", help="Print hostname, system, and machine."
-    )
-    host_modes.add_argument(
-        "--detailed",
-        action="store_true",
-        help="Print hostname, OS/runtime, and Python details.",
-    )
-
     subparsers.add_parser("providers", help="Show installed provider adapters.")
     return parser
 
@@ -137,11 +121,6 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.command == "skill":
             return handle_skill_command(args)
-
-        # Host fixture: comment out this dispatch block for an actual project.
-        if args.command == "host":
-            write_stdout_line(render_host_details(collect_host_snapshot(), detailed=args.detailed))
-            return 0
 
         if args.command == "providers":
             write_stdout_line("echo")

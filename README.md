@@ -61,6 +61,27 @@ mypy
 
 The default provider is `echo`, so the CLI runs locally without credentials. The runtime path uses only the Python standard library. Add real model vendors under `src/agent_cli/providers/` by implementing `LanguageModel`.
 
+## Naming
+
+This repo has two kinds of names:
+
+- Distribution package: `ai-agent-cli`
+- Installed commands: `agent` and `my-cli`
+
+Build artifacts use the distribution package name. That is why `python -m build` creates files like:
+
+```text
+ai_agent_cli-0.1.0.tar.gz
+ai_agent_cli-0.1.0-py3-none-any.whl
+```
+
+The generated fixture app is still installed and run as:
+
+```bash
+my-cli --basic
+my-cli --detailed
+```
+
 ## Quality standard
 
 Use pytest for all tests. Prefer function tests with fixtures such as `tmp_path`, `capsys`, and `monkeypatch`.
@@ -103,11 +124,11 @@ agent run --spec example "Implement this CLI feature"
 The repo includes a concrete generated-CLI fixture:
 
 ```bash
-agent host --basic
-agent host --detailed
+my-cli --basic
+my-cli --detailed
 ```
 
-See [docs/host-cli-generator-test.md](docs/host-cli-generator-test.md) for the full step-by-step test flow.
+See [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md) for the full step-by-step test flow.
 
 ## Skill workflow
 

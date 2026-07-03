@@ -2,14 +2,14 @@
 status: draft
 owner: product
 ---
-# Host machine details command
+# my-cli machine details command
 
 ## Purpose
-Add a command that prints non-sensitive details about the host machine running the CLI.
+Add a `my-cli` command that prints non-sensitive details about the host machine.
 
 ## Commands
-- `agent host --basic`
-- `agent host --detailed`
+- `my-cli --basic`
+- `my-cli --detailed`
 
 ## Inputs
 - `--basic`: print a small host summary.
@@ -37,9 +37,8 @@ The command should only print non-sensitive local machine details. It must not p
 The output format is one `key: value` pair per line. Keys use lowercase snake case.
 
 ## Acceptance tests
-- Given `agent host --basic`, stdout includes `hostname`, `system`, and `machine`.
-- Given `agent host --basic`, stdout does not include `python_version`.
-- Given `agent host --detailed`, stdout includes `hostname`, `system`, `machine`, `platform`, and `python_version`.
+- Given `my-cli --basic`, stdout includes `hostname`, `system`, and `machine`.
+- Given `my-cli --basic`, stdout does not include `python_version`.
+- Given `my-cli --detailed`, stdout includes `hostname`, `system`, `machine`, `platform`, and `python_version`.
 - Given no mode flag, the CLI returns a parser error.
 - Given both mode flags, the CLI returns a parser error.
-

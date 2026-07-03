@@ -22,6 +22,8 @@ dev = [
 
 [project.scripts]
 agent = "agent_cli.cli:main"
+# my-cli fixture: comment out or remove this generated CLI app for an actual project.
+my-cli = "agent_cli.commands.my_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agent_cli"]
