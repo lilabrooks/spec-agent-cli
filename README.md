@@ -3,6 +3,10 @@
 [![Tests](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml)
 [![Code quality](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml)
 [![Coverage](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/coverage.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/coverage.yml)
+![Spec-driven](https://img.shields.io/badge/spec--driven-Markdown-blue)
+![Agent-ready](https://img.shields.io/badge/agent--ready-yes-green)
+![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)
+![pipx installable](https://img.shields.io/badge/pipx-installable-blue)
 
 A Python 3.12+ starter structure for building a CLI around AI agents without tying the app to one vendor, API, or model family.
 
