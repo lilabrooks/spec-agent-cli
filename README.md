@@ -46,6 +46,14 @@ pipx install .
 agent run "Write a release note for version 0.1.0"
 ```
 
+Install directly from GitHub with pipx:
+
+```bash
+pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git"
+agent providers
+my-cli --basic
+```
+
 Install for local development:
 
 ```bash
@@ -86,7 +94,7 @@ my-cli --basic
 my-cli --detailed
 ```
 
-See [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md) for the step-by-step build and pipx install flow.
+See [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md) for GitHub, wheel, and local pipx install flows.
 
 ## Quality standard
 

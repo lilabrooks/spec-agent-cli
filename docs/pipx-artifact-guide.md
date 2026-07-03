@@ -1,15 +1,54 @@
 # pipx artifact guide
 
-This guide shows how to create an installable artifact and test it with pipx.
+This guide shows how to install from GitHub, create an installable artifact, and test both paths with pipx.
 
-## 1. Enter the project
+## 1. Install directly from GitHub
+
+Use this when someone wants to install the CLI without cloning the repo.
+
+```bash
+pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git"
+```
+
+Test the installed commands:
+
+```bash
+agent providers
+my-cli --basic
+```
+
+Install from a specific branch:
+
+```bash
+pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git@main"
+```
+
+Install from a tag after you create one:
+
+```bash
+pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git@v0.1.0"
+```
+
+Upgrade later:
+
+```bash
+pipx upgrade ai-agent-cli
+```
+
+Uninstall:
+
+```bash
+pipx uninstall ai-agent-cli
+```
+
+## 2. Enter the project for local artifact builds
 
 ```bash
 cd "/Users/lilabrooks/Documents/Python CLI"
 source .venv/bin/activate
 ```
 
-## 2. Run quality checks
+## 3. Run quality checks
 
 ```bash
 pytest
@@ -20,7 +59,7 @@ mypy
 
 Fix any failures before building.
 
-## 3. Install the build tool
+## 4. Install the build tool
 
 If `build` is not installed in the virtualenv:
 
@@ -28,7 +67,7 @@ If `build` is not installed in the virtualenv:
 python -m pip install build
 ```
 
-## 4. Build the artifacts
+## 5. Build the artifacts
 
 ```bash
 python -m build
@@ -43,7 +82,7 @@ dist/ai_agent_cli-0.1.0-py3-none-any.whl
 
 The artifact names use the distribution package name, `ai-agent-cli`, normalized to `ai_agent_cli`. The installed commands are still `agent` and `my-cli`.
 
-## 5. Install the wheel with pipx
+## 6. Install the wheel with pipx
 
 ```bash
 pipx install dist/ai_agent_cli-0.1.0-py3-none-any.whl
@@ -61,7 +100,7 @@ For local development, install the project in editable mode:
 pipx install -e .
 ```
 
-## 6. Test the installed commands
+## 7. Test the installed commands
 
 ```bash
 agent providers
@@ -78,7 +117,7 @@ system: ...
 machine: ...
 ```
 
-## 7. Move the artifact
+## 8. Move the artifact
 
 The portable file to share is the wheel:
 
@@ -93,9 +132,8 @@ pipx install /path/to/ai_agent_cli-0.1.0-py3-none-any.whl
 my-cli --basic
 ```
 
-## 8. Uninstall
+## 9. Uninstall
 
 ```bash
 pipx uninstall ai-agent-cli
 ```
-
