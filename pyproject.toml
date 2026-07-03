@@ -22,6 +22,8 @@ dev = [
     "pytest>=8.4.0",
     "ruff>=0.13.0",
 ]
+anthropic = ["anthropic>=0.69"]
+openai = ["openai>=1.0"]
 
 [project.scripts]
 agent = "agent_cli.cli:main"
@@ -83,6 +85,10 @@ python_version = "3.12"
 strict = true
 mypy_path = "src"
 files = ["src/agent_cli"]
+
+[[tool.mypy.overrides]]
+module = ["anthropic", "openai"]
+ignore_missing_imports = true
 
 [tool.coverage.run]
 branch = true

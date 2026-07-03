@@ -5,7 +5,7 @@ from agent_cli.providers.registry import create_provider
 
 
 def build_model(settings: Settings) -> LanguageModel:
-    return create_provider(settings.provider)
+    return create_provider(settings.provider, model=settings.model)
 
 
 def build_agent(settings: Settings) -> Agent:

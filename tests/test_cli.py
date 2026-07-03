@@ -8,7 +8,7 @@ def test_providers_command_writes_available_providers(capsys: pytest.CaptureFixt
 
     captured = capsys.readouterr()
     assert exit_code == 0
-    assert captured.out == "echo\n"
+    assert captured.out == "anthropic\necho\nopenai\n"
     assert captured.err == ""
 
 
@@ -82,6 +82,6 @@ def test_unknown_provider_exits_with_clear_next_step(capsys: pytest.CaptureFixtu
     assert error.value.code == 1
     assert captured.out == ""
     assert captured.err == (
-        "Error: Unknown provider 'missing'. Supported providers: echo.\n"
+        "Error: Unknown provider 'missing'. Supported providers: anthropic, echo, openai.\n"
         "Try 'agent providers' to see available providers.\n"
     )

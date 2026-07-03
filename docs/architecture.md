@@ -62,3 +62,17 @@ The CLI can validate skills and attach them to a run:
 agent skill check
 agent run --spec example --skill goal-driven-execution "Implement this feature"
 ```
+
+## Building files from a spec
+
+`agent run` prints the model's text reply and stops there — it never touches the filesystem. `agent build` is the command that turns a reply into real files:
+
+- `core/fileset.py` defines the parsing/writing contract: `parse_generated_files` extracts `FILE: <path>` markers and their following fenced code block into `GeneratedFile` records, `resolve_target_path` rejects absolute paths and `..` traversal, and `write_generated_files` writes to disk, refusing to overwrite existing files unless `force=True`.
+- `skills/agent/file-output-contract.md` documents that exact reply format. `cli.build()` always attaches it (independent of `--skill`/`--all-skills`), so the model is told how to reply in a parseable way regardless of what other skills are selected.
+- `cli.handle_build_command()` wires the two together: no `FILE:` blocks means it just prints the raw reply with a stderr warning; blocks found and no `--apply` means it prints the write plan only; `--apply` performs the write, and requires `--force` to overwrite existing files.
+
+This keeps the same inward-facing import rule as the rest of the project: `core/fileset.py` has no dependency on `cli.py`, providers, or skills — it only knows about plain text and paths.
+
+### `--spec` accepts any path, so `build` validates it first
+
+`resolve_spec`/`resolve_markdown` check whether the given string is an existing path before trying it as a slug under the spec root, so `--spec` on both `run` and `build` already accepts a spec file anywhere on disk, not just one under `specs/cli/`. That is convenient but means `agent build` can be pointed at a spec that was never checked — spending a real model call on a spec missing required sections wastes it. `cli._validate_spec_or_raise()` runs the same `validate_spec()` used by `agent spec check` before `build()` constructs the agent or calls the model: by default it only prints the errors to stderr and continues (a spec doesn't have to be complete to give useful context); with `--strict` it raises `SpecValidationError`, which `handle_build_command()` catches and reports with a pointer to `agent spec check <spec>`, before any provider is built or API call made.

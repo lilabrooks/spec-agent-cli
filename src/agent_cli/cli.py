@@ -3,6 +3,12 @@ import sys
 from pathlib import Path
 
 from agent_cli.config.settings import Settings
+from agent_cli.core.fileset import (
+    GeneratedFile,
+    parse_generated_files,
+    resolve_target_path,
+    write_generated_files,
+)
 from agent_cli.core.parser import FriendlyArgumentParser
 from agent_cli.providers.registry import available_providers
 from agent_cli.resources import default_skill_root, default_spec_root
@@ -10,16 +16,32 @@ from agent_cli.runtime.factory import build_agent
 from agent_cli.skills.loader import list_skills, load_skill, resolve_skill, validate_skill
 from agent_cli.specs.loader import list_specs, load_spec, resolve_spec, validate_spec
 
+FILE_OUTPUT_CONTRACT_SKILL = "file-output-contract"
 
-def run(
-    prompt: str,
-    provider: str | None = None,
-    spec: str | None = None,
-    skills: list[str] | None = None,
-    all_skills: bool = False,
-) -> str:
-    settings = Settings.from_env(provider_override=provider)
-    agent = build_agent(settings)
+
+class SpecValidationError(ValueError):
+    """Raised when `agent build --strict` finds a spec with validation errors."""
+
+
+def _validate_spec_or_raise(spec_path: Path, *, strict: bool) -> None:
+    result = validate_spec(load_spec(spec_path))
+    if not result.errors:
+        return
+
+    if strict:
+        msg = f"Spec {spec_path} failed validation:\n{result.format()}"
+        raise SpecValidationError(msg)
+
+    write_stderr_line(f"Warning: spec {spec_path} has validation errors:")
+    write_stderr_line(result.format())
+    write_stderr_line("Continuing without --strict. Run 'agent spec check' for the full report.")
+
+
+def _gather_context_blocks(
+    spec: str | None,
+    skills: list[str] | None,
+    all_skills: bool,
+) -> list[str]:
     context_blocks: list[str] = []
     if spec is not None:
         spec_path = resolve_spec(spec, default_spec_root())
@@ -33,9 +55,46 @@ def run(
     for skill_path in skill_paths:
         context_blocks.append(load_skill(skill_path).to_agent_context())
 
+    return context_blocks
+
+
+def run(
+    prompt: str,
+    provider: str | None = None,
+    spec: str | None = None,
+    skills: list[str] | None = None,
+    all_skills: bool = False,
+) -> str:
+    settings = Settings.from_env(provider_override=provider)
+    agent = build_agent(settings)
+    context_blocks = _gather_context_blocks(spec, skills, all_skills)
     agent_prompt = "\n\n".join([*context_blocks, f"Task:\n{prompt}"]) if context_blocks else prompt
     result = agent.run(agent_prompt)
     return f"{result.agent_name}: {result.text}"
+
+
+def build(  # noqa: PLR0913 (one flag per --spec/--skill/--all-skills/--strict CLI option)
+    prompt: str,
+    provider: str | None = None,
+    spec: str | None = None,
+    skills: list[str] | None = None,
+    all_skills: bool = False,
+    strict: bool = False,
+) -> tuple[str, list[GeneratedFile]]:
+    """Run the agent with the file-output contract attached, then parse the reply."""
+    if spec is not None:
+        _validate_spec_or_raise(resolve_spec(spec, default_spec_root()), strict=strict)
+
+    settings = Settings.from_env(provider_override=provider)
+    agent = build_agent(settings)
+    context_blocks = _gather_context_blocks(spec, skills, all_skills)
+
+    contract_path = resolve_skill(FILE_OUTPUT_CONTRACT_SKILL, default_skill_root())
+    context_blocks.append(load_skill(contract_path).to_agent_context())
+
+    agent_prompt = "\n\n".join([*context_blocks, f"Task:\n{prompt}"])
+    result = agent.run(agent_prompt)
+    return result.text, parse_generated_files(result.text)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -126,6 +185,49 @@ def build_parser() -> argparse.ArgumentParser:
         "--root", default=str(default_skill_root()), help="Skill root folder."
     )
 
+    build_cmd_parser = subparsers.add_parser(
+        "build",
+        help="Run the agent under the file-output contract and write the files it returns.",
+    )
+    build_cmd_parser.add_argument("prompt", help="Feature or task to build.")
+    build_cmd_parser.add_argument("--provider", "-p", help="Provider adapter to use.")
+    build_cmd_parser.add_argument("--spec", help="Markdown CLI spec to attach to the agent prompt.")
+    build_skill_modes = build_cmd_parser.add_mutually_exclusive_group()
+    build_skill_modes.add_argument(
+        "--skill",
+        action="append",
+        default=[],
+        help="Markdown agent skill to attach. Repeat for multiple skills.",
+    )
+    build_skill_modes.add_argument(
+        "--all-skills",
+        action="store_true",
+        help="Attach every Markdown agent skill from the default skill root.",
+    )
+    build_cmd_parser.add_argument(
+        "--out-dir",
+        default=".",
+        help="Directory generated files are written under.",
+    )
+    build_cmd_parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Write the generated files to disk. Without this flag, only print the plan.",
+    )
+    build_cmd_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite existing files. Only takes effect together with --apply.",
+    )
+    build_cmd_parser.add_argument(
+        "--strict",
+        action="store_true",
+        help=(
+            "Fail before calling the model if --spec has validation errors. "
+            "Default is to warn on stderr and continue."
+        ),
+    )
+
     subparsers.add_parser("providers", help="Show installed provider adapters.")
     return parser
 
@@ -146,6 +248,9 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 0
+
+        if args.command == "build":
+            return handle_build_command(args)
 
         if args.command == "spec":
             return handle_spec_command(args)
@@ -180,6 +285,53 @@ def write_stdout_line(value: object) -> None:
 
 def write_stderr_line(value: object) -> None:
     sys.stderr.write(f"{value}\n")
+
+
+def handle_build_command(args: argparse.Namespace) -> int:
+    try:
+        text, files = build(
+            prompt=args.prompt,
+            provider=args.provider,
+            spec=args.spec,
+            skills=args.skill,
+            all_skills=args.all_skills,
+            strict=args.strict,
+        )
+    except SpecValidationError as error:
+        write_stderr_line(f"Error: {error}")
+        write_stderr_line(f"Try 'agent spec check {args.spec}' to see the full report.")
+        return 1
+
+    if not files:
+        write_stdout_line(text)
+        write_stderr_line(
+            "Warning: no 'FILE:' blocks found in the agent's response; nothing to write."
+        )
+        return 0
+
+    out_dir = Path(args.out_dir)
+    try:
+        targets = [resolve_target_path(out_dir, generated) for generated in files]
+    except ValueError as error:
+        write_stderr_line(f"Error: {error}")
+        return 1
+
+    if not args.apply:
+        write_stdout_line(f"Plan: {len(files)} file(s) under {out_dir}:")
+        for target in targets:
+            write_stdout_line(f"  {target}")
+        write_stdout_line("Re-run with --apply to write these files.")
+        return 0
+
+    try:
+        write_generated_files(files, targets, force=args.force)
+    except FileExistsError as error:
+        write_stderr_line(f"Error: {error}")
+        return 1
+
+    for target in targets:
+        write_stdout_line(f"Wrote {target}")
+    return 0
 
 
 def handle_spec_command(args: argparse.Namespace) -> int:
