@@ -72,4 +72,6 @@ def test_my_cli_requires_one_detail_mode(capsys: pytest.CaptureFixture[str]) -> 
     captured = capsys.readouterr()
     assert error.value.code == 2
     assert captured.out == ""
+    assert "Error:" in captured.err
     assert "one of the arguments --basic --detailed is required" in captured.err
+    assert "Try 'my-cli --help' for available options." in captured.err

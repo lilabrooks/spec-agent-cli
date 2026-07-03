@@ -4,6 +4,8 @@ import socket
 import sys
 from dataclasses import dataclass
 
+from agent_cli.core.parser import FriendlyArgumentParser
+
 # my-cli fixture: this module exists to test the CLI generator repo with a
 # concrete generated app. For an actual project, this file and the matching
 # `my-cli` entry in pyproject.toml can be commented out or removed.
@@ -56,7 +58,7 @@ def render_machine_details(snapshot: MachineSnapshot, detailed: bool) -> str:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = FriendlyArgumentParser(
         prog="my-cli",
         description="Print non-sensitive host machine details.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,

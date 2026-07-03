@@ -83,6 +83,12 @@ agent run --spec my-cli-details \
 
 The default provider is `echo`, so this command proves that the Markdown spec and skills are loaded into the agent prompt. It does not call a real AI model yet.
 
+To attach every available skill instead of selecting them one by one:
+
+```bash
+agent run --spec my-cli-details --all-skills "Implement this CLI feature"
+```
+
 ## 5. Run quality checks
 
 ```bash

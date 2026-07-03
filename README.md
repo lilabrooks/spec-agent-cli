@@ -169,11 +169,17 @@ Python and CLI quality skills:
 - `cli-test-coverage`
 - `python-packaging-cli`
 
-Use one or more skills with a spec:
+Skills are opt-in per run. Attach selected skills with a spec:
 
 ```bash
 agent skill check
 agent run --spec example --skill goal-driven-execution --skill stdlib-cli-ux "Implement this feature"
+```
+
+Or attach every available skill:
+
+```bash
+agent run --spec example --all-skills "Implement this feature"
 ```
 
 ## Design

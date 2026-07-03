@@ -50,6 +50,6 @@ class SpecValidationResult:
     def format(self) -> str:
         status = "ok" if self.ok else "failed"
         lines = [f"{self.path}: {status}"]
-        lines.extend(f"  error: {error}" for error in self.errors)
-        lines.extend(f"  warning: {warning}" for warning in self.warnings)
+        lines.extend(f"  Error: {error}" for error in self.errors)
+        lines.extend(f"  Warning: {warning}" for warning in self.warnings)
         return "\n".join(lines)

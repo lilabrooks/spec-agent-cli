@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from agent_cli.config.settings import Settings
+from agent_cli.core.parser import FriendlyArgumentParser
 from agent_cli.runtime.factory import build_agent
 from agent_cli.skills.loader import list_skills, load_skill, resolve_skill, validate_skill
 from agent_cli.specs.loader import list_specs, load_spec, resolve_spec, validate_spec
@@ -16,6 +17,7 @@ def run(
     provider: str | None = None,
     spec: str | None = None,
     skills: list[str] | None = None,
+    all_skills: bool = False,
 ) -> str:
     settings = Settings.from_env(provider_override=provider)
     agent = build_agent(settings)
@@ -23,37 +25,54 @@ def run(
     if spec is not None:
         spec_path = resolve_spec(spec, DEFAULT_SPEC_ROOT)
         context_blocks.append(load_spec(spec_path).to_agent_context())
-    for skill in skills or []:
-        skill_path = resolve_skill(skill, DEFAULT_SKILL_ROOT)
+
+    skill_paths = list_skills(DEFAULT_SKILL_ROOT) if all_skills else []
+    skill_paths.extend(resolve_skill(skill, DEFAULT_SKILL_ROOT) for skill in skills or [])
+    for skill_path in skill_paths:
         context_blocks.append(load_skill(skill_path).to_agent_context())
+
     agent_prompt = "\n\n".join([*context_blocks, f"Task:\n{prompt}"]) if context_blocks else prompt
     result = agent.run(agent_prompt)
     return f"{result.agent_name}: {result.text}"
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = FriendlyArgumentParser(
         prog="agent",
         description="Run vendor-neutral AI agent workflows.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         allow_abbrev=False,
     )
     parser.suggest_on_error = True  # type: ignore[attr-defined]
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True,
+        parser_class=FriendlyArgumentParser,
+    )
 
     run_parser = subparsers.add_parser("run", help="Run one prompt through the configured agent.")
     run_parser.add_argument("prompt", help="Task or question for the agent.")
     run_parser.add_argument("--provider", "-p", help="Provider adapter to use.")
     run_parser.add_argument("--spec", help="Markdown CLI spec to attach to the agent prompt.")
-    run_parser.add_argument(
+    skill_modes = run_parser.add_mutually_exclusive_group()
+    skill_modes.add_argument(
         "--skill",
         action="append",
         default=[],
         help="Markdown agent skill to attach. Repeat for multiple skills.",
     )
+    skill_modes.add_argument(
+        "--all-skills",
+        action="store_true",
+        help="Attach every Markdown agent skill from the default skill root.",
+    )
 
     spec_parser = subparsers.add_parser("spec", help="Work with Markdown CLI specs.")
-    spec_subparsers = spec_parser.add_subparsers(dest="spec_command", required=True)
+    spec_subparsers = spec_parser.add_subparsers(
+        dest="spec_command",
+        required=True,
+        parser_class=FriendlyArgumentParser,
+    )
 
     spec_list_parser = spec_subparsers.add_parser("list", help="List available CLI specs.")
     spec_list_parser.add_argument(
@@ -76,7 +95,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     skill_parser = subparsers.add_parser("skill", help="Work with Markdown agent skills.")
-    skill_subparsers = skill_parser.add_subparsers(dest="skill_command", required=True)
+    skill_subparsers = skill_parser.add_subparsers(
+        dest="skill_command",
+        required=True,
+        parser_class=FriendlyArgumentParser,
+    )
 
     skill_list_parser = skill_subparsers.add_parser("list", help="List available agent skills.")
     skill_list_parser.add_argument(
@@ -112,7 +135,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "run":
             write_stdout_line(
-                run(prompt=args.prompt, provider=args.provider, spec=args.spec, skills=args.skill)
+                run(
+                    prompt=args.prompt,
+                    provider=args.provider,
+                    spec=args.spec,
+                    skills=args.skill,
+                    all_skills=args.all_skills,
+                )
             )
             return 0
 
@@ -125,8 +154,19 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "providers":
             write_stdout_line("echo")
             return 0
-    except (FileNotFoundError, ValueError) as error:
-        parser.exit(1, f"error: {error}\n")
+    except FileNotFoundError as error:
+        parser.exit(
+            1,
+            (
+                f"Error: {error}\n"
+                "Try 'agent spec list' or 'agent skill list' to see available files.\n"
+            ),
+        )
+    except ValueError as error:
+        parser.exit(
+            1,
+            f"Error: {error}\nTry 'agent providers' to see available providers.\n",
+        )
 
     parser.error(f"Unknown command {args.command!r}")
     return 2
