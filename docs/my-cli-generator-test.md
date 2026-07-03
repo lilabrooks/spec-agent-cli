@@ -115,3 +115,5 @@ That is expected. The command installed from those artifacts is still:
 my-cli --basic
 my-cli --detailed
 ```
+
+For the full artifact build and pipx install flow, see [pipx-artifact-guide.md](pipx-artifact-guide.md).

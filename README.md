@@ -82,6 +82,8 @@ my-cli --basic
 my-cli --detailed
 ```
 
+See [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md) for the step-by-step build and pipx install flow.
+
 ## Quality standard
 
 Use pytest for all tests. Prefer function tests with fixtures such as `tmp_path`, `capsys`, and `monkeypatch`.
