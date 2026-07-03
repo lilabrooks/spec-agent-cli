@@ -148,6 +148,10 @@ my-cli --detailed
 
 See [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md) for the full step-by-step test flow.
 
+## Flow
+
+![Spec Agent CLI flow](docs/assets/spec-agent-cli-flow.svg)
+
 ## Skill workflow
 
 Agent skills live in `skills/agent/`. They describe how the agent should work while implementing a CLI spec.
