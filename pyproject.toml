@@ -15,6 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "coverage[toml]>=7.6.0",
     "mypy>=1.18.0",
     "pytest>=8.4.0",
     "ruff>=0.13.0",
@@ -70,3 +71,11 @@ python_version = "3.12"
 strict = true
 mypy_path = "src"
 files = ["src/agent_cli"]
+
+[tool.coverage.run]
+branch = true
+source = ["agent_cli"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
