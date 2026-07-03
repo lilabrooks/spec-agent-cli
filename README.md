@@ -55,12 +55,50 @@ The default specs and skills ship inside the package, so `agent spec` and `agent
 
 ## Configuration
 
-Two environment variables adjust runtime behavior. They are read directly from the process environment; there is no `.env` auto-loading.
+Two environment variables adjust runtime behavior. They are read directly from the process environment, so set them in your shell before running. There is no `.env` auto-loading.
 
-- `AGENT_CLI_PROVIDER` sets the provider adapter (default `echo`). The `--provider` flag overrides it.
-- `AGENT_CLI_SYSTEM_PROMPT` sets the system prompt passed to the agent (default `You are a concise, practical assistant.`). The bundled `echo` provider ignores it; real provider adapters will use it.
+You can set a variable for a single command by prefixing it, or export it to apply to every command in the shell session:
 
-Export them before running, for example `AGENT_CLI_PROVIDER=echo agent providers`.
+```bash
+# One command only
+AGENT_CLI_PROVIDER=echo agent run "Write a release note for version 0.1.0"
+
+# Whole session
+export AGENT_CLI_PROVIDER=echo
+agent run "Write a release note for version 0.1.0"
+```
+
+### `AGENT_CLI_PROVIDER`
+
+Chooses which provider adapter answers the prompt. Default is `echo`. Run `agent providers` to see the adapters that are installed.
+
+Precedence is `--provider` flag, then `AGENT_CLI_PROVIDER`, then the `echo` default. So the flag wins when both are set:
+
+```bash
+export AGENT_CLI_PROVIDER=echo
+agent run --provider echo "hello"     # --provider wins over the env var
+```
+
+An unknown provider fails fast with the list of supported names:
+
+```bash
+$ agent run --provider gpt "hello"
+Error: Unknown provider 'gpt'. Supported providers: echo.
+Try 'agent providers' to see available providers.
+```
+
+Right now `echo` is the only bundled adapter, so this variable becomes useful once you add your own under `src/agent_cli/providers/` and register it (see [Provider Design](#provider-design)).
+
+### `AGENT_CLI_SYSTEM_PROMPT`
+
+Sets the system prompt sent to the agent ahead of your task. Default is `You are a concise, practical assistant.`. There is no CLI flag for it, so the env var or the default is used.
+
+```bash
+export AGENT_CLI_SYSTEM_PROMPT="You are a terse release-notes writer. Use past tense."
+agent run "Summarize the changes in version 0.1.0"
+```
+
+Heads-up: the bundled `echo` adapter replies with your task text verbatim and ignores the system prompt, so this variable has no visible effect until you wire up a real model adapter that passes the prompt to the model.
 
 ## Development Setup
 
@@ -216,8 +254,8 @@ This repository has two important names:
 Build artifacts use the distribution package name normalized for Python packaging. That is why `python -m build` creates files like:
 
 ```text
-ai_agent_cli-0.1.0.tar.gz
-ai_agent_cli-0.1.0-py3-none-any.whl
+ai_agent_cli-0.2.0.tar.gz
+ai_agent_cli-0.2.0-py3-none-any.whl
 ```
 
 That is expected. The installed commands remain:
@@ -237,6 +275,7 @@ Runtime code should stay dependency-free unless a spec requires a dependency. De
 
 ## Additional Docs
 
+- [CHANGELOG.md](CHANGELOG.md)
 - [docs/architecture.md](docs/architecture.md)
 - [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md)
 - [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md)

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ai-agent-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "Vendor-neutral Python 3.12+ CLI scaffold for AI agent workflows."
 readme = "README.md"
 requires-python = ">=3.12"

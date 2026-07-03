@@ -111,8 +111,8 @@ python -m build
 The files in `dist/` use the distribution package name, `ai-agent-cli`, normalized to `ai_agent_cli`:
 
 ```text
-ai_agent_cli-0.1.0.tar.gz
-ai_agent_cli-0.1.0-py3-none-any.whl
+ai_agent_cli-0.2.0.tar.gz
+ai_agent_cli-0.2.0-py3-none-any.whl
 ```
 
 That is expected. The command installed from those artifacts is still:
