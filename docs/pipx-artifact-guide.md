@@ -59,12 +59,12 @@ mypy
 
 Fix any failures before building.
 
-## 4. Install the build tool
+## 4. Install the build tools
 
-If `build` is not installed in the virtualenv:
+If you did not install the development extra, install the build frontend and backend:
 
 ```bash
-python -m pip install build
+python -m pip install build hatchling
 ```
 
 ## 5. Build the artifacts

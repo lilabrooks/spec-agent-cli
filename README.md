@@ -8,7 +8,7 @@
 ![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)
 ![pipx installable](https://img.shields.io/badge/pipx-installable-blue)
 
-A Python 3.12+ starter structure for building a CLI around AI agents without tying the app to one vendor, API, or model family.
+A Python 3.12+ starter structure for building spec-driven CLI generators that use Markdown specs, reusable agent skills, and pluggable model providers without tying the app to one vendor, API, or model family.
 
 ## Layout
 
