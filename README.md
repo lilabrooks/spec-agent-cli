@@ -10,16 +10,46 @@
 
 A Python 3.12+ starter project for building spec-driven CLI generators. It combines Markdown CLI specs, reusable agent skills, strict Python quality checks, and pluggable model providers without tying the application to one vendor, API, or model family.
 
+<details open>
+<summary><strong>📖 Table of Contents</strong></summary>
+
+- [What This Project Provides](#what-this-project-provides)
+- [Flow](#flow)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+  - [`AGENT_CLI_PROVIDER`](#agent_cli_provider)
+  - [`AGENT_CLI_MODEL`](#agent_cli_model)
+    - [How to choose a model](#how-to-choose-a-model)
+  - [`AGENT_CLI_SYSTEM_PROMPT`](#agent_cli_system_prompt)
+- [Development Setup](#development-setup)
+- [Spec Workflow](#spec-workflow)
+- [Skill Workflow](#skill-workflow)
+- [Building Files from a Spec](#building-files-from-a-spec)
+  - [Validating the spec before the model call](#validating-the-spec-before-the-model-call)
+- [Step-by-Step: Generate a CLI from Any Spec File and Model](#step-by-step-generate-a-cli-from-any-spec-file-and-model)
+  - [Steering the output shape](#steering-the-output-shape)
+- [Generated CLI Fixture](#generated-cli-fixture)
+- [Project Layout](#project-layout)
+- [Provider Design](#provider-design)
+- [Naming and Artifacts](#naming-and-artifacts)
+- [Quality Standard](#quality-standard)
+- [Additional Docs](#additional-docs)
+
+</details>
+
 ## What This Project Provides
 
-- A packaged Python CLI named `agent` for running spec-aware agent workflows.
-- A Markdown spec system under `specs/cli/` for describing CLIs before implementation.
-- Reusable agent skills under `skills/agent/` for implementation style, testing, packaging, and CLI UX.
-- A provider abstraction so model integrations can be swapped without changing command logic.
-- A generated fixture command named `my-cli` that proves the generator structure can produce an installable CLI.
-- Pytest, Ruff, mypy, coverage, packaging, and pipx-ready project configuration.
+You can use this CLI generator to describe a command-line tool as a plain Markdown spec and have an AI agent — on whichever model vendor you choose — turn it into a real, working Python CLI.
 
-The default provider is `echo`, so the project runs locally without credentials or network access.
+- Accepts a spec from anywhere on disk, not just one kept under this repo's own `specs/cli/` folder.
+- Works with any model vendor: bundled adapters for Anthropic Claude, OpenAI, and a credential-free `echo` stub, swappable without touching application code.
+- Lets you pick a specific model per vendor, independent of which provider is active.
+- Applies reusable "skills" that steer how the agent implements, tests, packages, and shapes the UX of what it builds — attach one, several, or all of them.
+- Validates a spec's required sections before spending a real model call on it, with a forgiving default and an optional strict mode.
+- Shows a full preview of exactly which files a generation would produce before anything is written.
+- Writes the generated files for real, refusing to silently overwrite anything already on disk.
+- Runs entirely free of API keys and network access out of the box, and only needs credentials once you opt into a real model vendor.
+- Ships as a proper, pipx-installable Python package, with its own generated example CLI proving the whole pattern works end to end.
 
 ## Flow
 
@@ -89,6 +119,10 @@ Try 'agent providers' to see available providers.
 
 Bundled adapters: `echo` (no credentials or network access), `anthropic` (Claude API, needs `pip install ".[anthropic]"` and an `ANTHROPIC_API_KEY`), and `openai` (Chat Completions API, needs `pip install ".[openai]"` and an `OPENAI_API_KEY`). Add further vendors under `src/agent_cli/providers/` and register them (see [Provider Design](#provider-design)).
 
+**An API key only matters once you've actually selected that provider.** `ANTHROPIC_API_KEY`/`OPENAI_API_KEY` are read by the `anthropic`/`openai` SDKs themselves, not by this CLI, and only the moment `AGENT_CLI_PROVIDER` (or `--provider`) is set to that provider's name — the default `echo` never looks at either variable, so having one exported with `AGENT_CLI_PROVIDER` still unset (or set to `echo`) is a no-op.
+
+It does **not** need to be set globally. Like the other variables in this section, it only has to be present in the process environment for the command that runs — export it in your shell profile if you always want it available, prefix a single command with it if you don't, or set it in a `.env`-loading tool of your own (this project doesn't auto-load one). There's nothing to configure inside the CLI itself; whatever `ANTHROPIC_API_KEY`/`OPENAI_API_KEY` is visible to the process at run time is what the SDK picks up.
+
 ### `AGENT_CLI_MODEL`
 
 Overrides which model the active provider adapter calls. There is no CLI flag, so the env var or the adapter's built-in default is used:
@@ -100,6 +134,19 @@ agent run "Summarize the changes in version 0.1.0"
 ```
 
 If unset, each adapter falls back to its own default: `anthropic` → `claude-opus-4-8`, `openai` → `gpt-4o-mini`. The `echo` adapter has no underlying model and ignores this variable entirely.
+
+**`AGENT_CLI_MODEL` alone does nothing.** It only takes effect on whichever provider `AGENT_CLI_PROVIDER`/`--provider` actually selects. Setting `AGENT_CLI_MODEL=claude-sonnet-5` while the provider is still (or defaults to) `echo` is a silent no-op — you'll get the same echoed text either way, with no error to flag the mismatch. Always set both together:
+
+```bash
+# Wrong: model is set, but the provider is still the echo default — no effect
+export AGENT_CLI_MODEL=claude-sonnet-5
+agent run "hello"   # still runs through echo
+
+# Right: provider and model set together
+export AGENT_CLI_PROVIDER=anthropic
+export AGENT_CLI_MODEL=claude-sonnet-5
+agent run "hello"   # now actually calls claude-sonnet-5
+```
 
 #### How to choose a model
 
