@@ -34,6 +34,7 @@ A Python 3.12+ starter project for building spec-driven CLI generators. It combi
 - [Naming and Artifacts](#naming-and-artifacts)
 - [Quality Standard](#quality-standard)
 - [Additional Docs](#additional-docs)
+- [Project Status](#project-status)
 
 </details>
 
@@ -53,7 +54,7 @@ You can use this CLI generator to describe a command-line tool as a plain Markdo
 
 ## Flow
 
-![Spec Agent CLI flow](docs/assets/spec-agent-cli-flow.svg)
+![Spec Agent CLI flow: a Markdown spec from any path, agent skills, and a chosen provider and model become an agent build prompt, which is parsed into FILE: blocks, previewed, then written to disk as a real, pipx-installable generated CLI.](docs/assets/spec-agent-cli-flow.svg)
 
 ## Quick Start
 
@@ -552,4 +553,7 @@ Runtime code should stay dependency-free unless a spec requires a dependency. De
 - [docs/skill-research.md](docs/skill-research.md)
 - [skills/README.md](skills/README.md)
 - [specs/README.md](specs/README.md)
-```
+
+## Project Status
+
+This is a personal side project, maintained on a best-effort basis rather than a supported product. Tests, linting, and type-checking run on every change, but there's no SLA on response time — issues and pull requests are welcome, and may take a while to get to.
