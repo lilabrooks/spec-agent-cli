@@ -1,0 +1,58 @@
+---
+id: SPEC-008
+title: Repository health invariants
+type: spec
+status: current
+version: 0.3.0
+date: 2026-07-04
+owner: Lila Brooks
+components:
+  - tests/test_repo_health.py
+  - pyproject.toml
+  - CHANGELOG.md
+  - Makefile
+tags: [health, versioning, quality, ci]
+related: [SPEC-000, SPEC-005]
+---
+
+# Repository Health Invariants
+
+## Purpose
+
+Define the repo-level consistency rules that must hold on every commit, independent of any feature's behavior — and where each one is enforced. The trigger for this spec was a real drift: a commit claimed a 0.3.0 bump while `pyproject.toml`, `__version__`, and the CHANGELOG all still said 0.2.0, and nothing failed.
+
+## Invariants
+
+### 1. One version, everywhere
+
+`pyproject.toml` `[project] version` is the single source of truth. The following must always agree with it:
+
+- `agent_cli.__version__` in `src/agent_cli/__init__.py`.
+- The newest `## [x.y.z]` release heading in `CHANGELOG.md` (older headings are history and exempt).
+- Every `ai_agent_cli-<x.y.z>` artifact name and `@v<x.y.z>` git-tag reference in `README.md` and `docs/*.md`.
+- Every `version:` field in the YAML frontmatter of documents under `docs/` (the component specs in `docs/specs/`).
+
+**Enforced by** `tests/test_repo_health.py` (version tests), which run in `make check` and CI. A version bump that misses any of these files now fails the suite instead of shipping silently.
+
+### 2. Bundled documents stay valid
+
+Every spec under `specs/cli/` and every skill under `skills/agent/` must pass its own validator (`validate_spec` / `validate_skill`) with zero errors — these files ship inside the wheel (SPEC-007) and are attached to real model calls, so a broken one is a runtime defect, not a docs problem.
+
+**Enforced by** `tests/test_repo_health.py` (validation tests), equivalent to `agent spec check` and `agent skill check` exiting 0.
+
+### 3. Quality gates
+
+- ruff lint and format checks pass with the configured rule set.
+- mypy passes in `strict` mode over the package.
+- pytest passes with branch coverage ≥ 70% (`fail_under = 70`).
+- CI runs the same gates on Python 3.12, 3.13, and 3.14; `make check-all` reproduces that matrix locally.
+
+**Enforced by** `make check` locally and the GitHub Actions workflows on every push.
+
+## Advisory (not hard-enforced)
+
+- A git tag `v<x.y.z>` should exist for each CHANGELOG release heading once published.
+
+## Acceptance tests
+
+`tests/test_repo_health.py` — six tests: package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, spec validation, skill validation. All must pass for `make check` to succeed.

@@ -26,7 +26,7 @@ pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git@main"
 Install from a tag after you create one:
 
 ```bash
-pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git@v0.2.0"
+pipx install "git+https://github.com/lilabrooks/spec-agent-cli.git@v0.3.0"
 ```
 
 Upgrade later:
@@ -76,8 +76,8 @@ python -m build
 Expected output files:
 
 ```text
-dist/ai_agent_cli-0.2.0.tar.gz
-dist/ai_agent_cli-0.2.0-py3-none-any.whl
+dist/ai_agent_cli-0.3.0.tar.gz
+dist/ai_agent_cli-0.3.0-py3-none-any.whl
 ```
 
 The artifact names use the distribution package name, `ai-agent-cli`, normalized to `ai_agent_cli`. The installed commands are still `agent` and `my-cli`.
@@ -85,7 +85,7 @@ The artifact names use the distribution package name, `ai-agent-cli`, normalized
 ## 6. Install the wheel with pipx
 
 ```bash
-pipx install dist/ai_agent_cli-0.2.0-py3-none-any.whl
+pipx install dist/ai_agent_cli-0.3.0-py3-none-any.whl
 ```
 
 If `ai-agent-cli` is already installed with pipx, reinstall it:
@@ -122,13 +122,13 @@ machine: ...
 The portable file to share is the wheel:
 
 ```text
-dist/ai_agent_cli-0.2.0-py3-none-any.whl
+dist/ai_agent_cli-0.3.0-py3-none-any.whl
 ```
 
 On another machine with Python and pipx installed:
 
 ```bash
-pipx install /path/to/ai_agent_cli-0.2.0-py3-none-any.whl
+pipx install /path/to/ai_agent_cli-0.3.0-py3-none-any.whl
 my-cli --basic
 ```
 

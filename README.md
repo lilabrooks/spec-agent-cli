@@ -525,8 +525,8 @@ This repository has two important names:
 Build artifacts use the distribution package name normalized for Python packaging. That is why `python -m build` creates files like:
 
 ```text
-ai_agent_cli-0.2.0.tar.gz
-ai_agent_cli-0.2.0-py3-none-any.whl
+ai_agent_cli-0.3.0.tar.gz
+ai_agent_cli-0.3.0-py3-none-any.whl
 ```
 
 That is expected. The installed commands remain:

@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-02
+
+### Added
+
+- `anthropic` provider adapter backed by the Claude Messages API (default model `claude-opus-4-8`), installed via the `anthropic` optional extra.
+- `openai` provider adapter backed by the Chat Completions API (default model `gpt-4o-mini`), installed via the `openai` optional extra. Both adapters defer their SDK import to `complete()`, so the CLI keeps working with neither extra installed.
+- `AGENT_CLI_MODEL` environment variable to override which model the active provider adapter calls.
+- `agent build` command: runs the same spec/skill-aware prompt as `agent run` with the `file-output-contract` skill always attached, parses `FILE:` blocks from the reply (`core/fileset.py`), prints the write plan by default, writes files with `--apply`, and refuses to overwrite existing files unless `--force` is given. Generated paths are rejected if absolute or containing `..`.
+- `--strict` flag on `agent build` to fail before the model call when the attached spec has validation errors; the default warns on stderr and continues.
+- `skills/agent/file-output-contract.md` documenting the `FILE:` reply format the build parser consumes.
+
 ## [0.2.0] - 2026-07-02
 
 ### Added
