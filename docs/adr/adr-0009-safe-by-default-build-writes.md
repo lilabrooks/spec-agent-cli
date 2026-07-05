@@ -4,6 +4,7 @@ title: "Safe-by-default build writes: plan first, no silent overwrite, no path e
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [build, safety, file-output]
 related: [ADR-0006]

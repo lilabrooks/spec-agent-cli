@@ -1,5 +1,7 @@
 ---
 source: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+owner: Lila Brooks
+deciders: [Lila Brooks]
 ---
 # Python packaging for CLIs
 

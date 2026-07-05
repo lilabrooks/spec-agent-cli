@@ -6,6 +6,7 @@ status: current
 version: 0.3.0
 date: 2026-07-04
 owner: Lila Brooks
+deciders: [Lila Brooks]
 components:
   - src/agent_cli/config/settings.py
 tags: [configuration, environment]

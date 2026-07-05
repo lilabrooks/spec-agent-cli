@@ -4,6 +4,7 @@ title: Environment-variable-only configuration, no .env auto-loading
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [configuration, environment]
 related: [ADR-0002, ADR-0004]

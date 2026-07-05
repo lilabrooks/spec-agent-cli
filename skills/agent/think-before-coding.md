@@ -1,5 +1,7 @@
 ---
 source: https://github.com/multica-ai/andrej-karpathy-skills
+owner: Lila Brooks
+deciders: [Lila Brooks]
 ---
 # Think before coding
 

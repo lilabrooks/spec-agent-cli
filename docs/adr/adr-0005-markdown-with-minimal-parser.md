@@ -4,6 +4,7 @@ title: Markdown specs/skills with a minimal hand-rolled parser
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [markdown, parsing, specs, skills]
 related: [ADR-0004, ADR-0006]

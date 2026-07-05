@@ -4,6 +4,7 @@ title: Vendor-neutral LanguageModel protocol with a central provider registry
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [providers, protocol, registry]
 related: [ADR-0002, ADR-0004]

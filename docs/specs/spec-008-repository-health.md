@@ -6,13 +6,16 @@ status: current
 version: 0.3.0
 date: 2026-07-04
 owner: Lila Brooks
+deciders: [Lila Brooks]
 components:
   - tests/test_repo_health.py
+  - scripts/check-okf-docs.py
   - pyproject.toml
   - CHANGELOG.md
   - Makefile
+  - .github/workflows/code-quality.yml
 tags: [health, versioning, quality, ci]
-related: [SPEC-000, SPEC-005]
+related: [SPEC-000, SPEC-005, ADR-0010]
 ---
 
 # Repository Health Invariants
@@ -40,7 +43,19 @@ Every spec under `specs/cli/` and every skill under `skills/agent/` must pass it
 
 **Enforced by** `tests/test_repo_health.py` (validation tests), equivalent to `agent spec check` and `agent skill check` exiting 0.
 
-### 3. Quality gates
+### 3. OKF docs stay navigable
+
+The OKF-style documentation bundle must keep its structure and metadata intact:
+
+- `docs/index.md`, `docs/log.md`, `docs/specs/index.md`, and `docs/adr/index.md` exist.
+- `docs/index.md` declares `okf_version`.
+- Every tracked Markdown frontmatter block under `docs/`, `specs/`, and `skills/` has a non-empty `owner` and a `deciders` list.
+- Every tracked Markdown file under `docs/` with frontmatter has a non-empty `type`.
+- Local Markdown links under `docs/`, `specs/`, and `skills/` point at files or directories inside the repo.
+
+**Enforced by** `scripts/check-okf-docs.py`, which runs in `make check` and the code-quality workflow.
+
+### 4. Quality gates
 
 - ruff lint and format checks pass with the configured rule set.
 - mypy passes in `strict` mode over the package.
@@ -55,4 +70,6 @@ Every spec under `specs/cli/` and every skill under `skills/agent/` must pass it
 
 ## Acceptance tests
 
-`tests/test_repo_health.py` — six tests: package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, spec validation, skill validation. All must pass for `make check` to succeed.
+`tests/test_repo_health.py` — six tests: package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, spec validation, skill validation.
+
+`scripts/check-okf-docs.py` — validates OKF-style frontmatter, required docs bundle files, and local Markdown links. All checks must pass for `make check` to succeed.

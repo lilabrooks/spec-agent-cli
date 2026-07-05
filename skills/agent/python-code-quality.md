@@ -1,5 +1,7 @@
 ---
 source: https://docs.astral.sh/ruff/; https://mypy.readthedocs.io/en/stable/command_line.html
+owner: Lila Brooks
+deciders: [Lila Brooks]
 ---
 # Python code quality
 

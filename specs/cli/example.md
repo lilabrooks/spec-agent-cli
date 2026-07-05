@@ -1,6 +1,7 @@
 ---
 status: draft
 owner: product
+deciders: [Lila Brooks]
 ---
 # Example greeting command
 

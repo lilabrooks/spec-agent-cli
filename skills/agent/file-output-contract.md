@@ -1,5 +1,7 @@
 ---
 source: internal
+owner: Lila Brooks
+deciders: [Lila Brooks]
 ---
 # File output contract
 

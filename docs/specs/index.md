@@ -4,6 +4,7 @@ type: index
 status: current
 date: 2026-07-04
 owner: Lila Brooks
+deciders: [Lila Brooks]
 tags: [documentation, specs]
 ---
 
@@ -11,7 +12,7 @@ tags: [documentation, specs]
 
 These specs describe the architecture and behavior of the `agent` CLI as it exists today. They document the shipped code. The source of truth for planned CLI features remains the repo-root `specs/cli/` folder that `agent spec check` validates.
 
-Each file starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `version`, `date`, `owner`, `components`, `tags`, `related`).
+Each file starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `version`, `date`, `owner`, `deciders`, `components`, `tags`, `related`).
 
 | ID | Spec | Covers |
 | --- | --- | --- |
@@ -23,6 +24,6 @@ Each file starts with a YAML frontmatter block (`id`, `title`, `type`, `status`,
 | SPEC-005 | [Markdown document system](spec-005-markdown-document-system.md) | Parser, spec/skill documents, validation |
 | SPEC-006 | [Build and file output](spec-006-build-file-output.md) | `agent build`, `FILE:` contract, safe writes |
 | SPEC-007 | [Resource resolution](spec-007-resource-resolution.md) | Working-directory vs. bundled spec/skill roots |
-| SPEC-008 | [Repository health invariants](spec-008-repository-health.md) | Version consistency, document validity, quality gates |
+| SPEC-008 | [Repository health invariants](spec-008-repository-health.md) | Version consistency, OKF docs validation, quality gates |
 
 Architecture decisions behind these components are recorded separately in [docs/adr/](../adr/index.md).

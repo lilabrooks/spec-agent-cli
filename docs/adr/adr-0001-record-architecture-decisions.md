@@ -4,6 +4,7 @@ title: Record architecture decisions as ADRs
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [process, documentation]
 related: []
@@ -17,7 +18,7 @@ The project's design rationale lived in `docs/architecture.md`, the README, and 
 
 ## Decision
 
-Keep one Markdown file per significant architectural decision under `docs/adr/`, numbered sequentially. Every file starts with a YAML frontmatter block carrying `id`, `title`, `type: adr`, `status` (`proposed` | `accepted` | `deprecated` | `superseded`), `date`, `deciders`, `tags`, and `related`, followed by Context, Decision, and Consequences sections. A superseding ADR gets a new number; the old one changes status rather than being rewritten.
+Keep one Markdown file per significant architectural decision under `docs/adr/`, numbered sequentially. Every file starts with a YAML frontmatter block carrying `id`, `title`, `type: adr`, `status` (`proposed` | `accepted` | `deprecated` | `superseded`), `date`, `owner`, `deciders`, `tags`, and `related`, followed by Context, Decision, and Consequences sections. A superseding ADR gets a new number; the old one changes status rather than being rewritten.
 
 ## Consequences
 

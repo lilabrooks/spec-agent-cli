@@ -4,12 +4,13 @@ type: index
 status: current
 date: 2026-07-04
 owner: Lila Brooks
+deciders: [Lila Brooks]
 tags: [documentation, adr]
 ---
 
 # Architecture Decision Records
 
-Decisions that shaped this codebase, recorded after the fact from the shipped code, the architecture notes now in [contributing.md](../contributing.md), and the git history. Each ADR starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `date`, `deciders`, `tags`, `related`) and follows the Context / Decision / Consequences shape described in ADR-0001.
+Decisions that shaped this codebase, recorded after the fact from the shipped code, the architecture notes now in [contributing.md](../contributing.md), and the git history. Each ADR starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `date`, `owner`, `deciders`, `tags`, `related`) and follows the Context / Decision / Consequences shape described in ADR-0001.
 
 | ID | Decision | Status |
 | --- | --- | --- |
@@ -22,5 +23,6 @@ Decisions that shaped this codebase, recorded after the fact from the shipped co
 | [ADR-0007](adr-0007-bundle-specs-skills-in-wheel.md) | Bundle default specs/skills into the wheel, working directory wins | accepted |
 | [ADR-0008](adr-0008-env-var-configuration.md) | Environment-variable-only configuration, no `.env` auto-loading | accepted |
 | [ADR-0009](adr-0009-safe-by-default-build-writes.md) | Safe-by-default build writes: plan first, no silent overwrite, no path escape | accepted |
+| [ADR-0010](adr-0010-okf-docs-validation.md) | Validate OKF docs with a repo-local stdlib script | accepted |
 
 The component-level behavior these decisions produce is specified in [docs/specs/](../specs/index.md).

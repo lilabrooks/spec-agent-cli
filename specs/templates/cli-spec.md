@@ -1,6 +1,7 @@
 ---
 status: draft
-owner:
+owner: product
+deciders: [Lila Brooks]
 ---
 # CLI feature name
 

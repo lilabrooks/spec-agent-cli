@@ -4,6 +4,7 @@ title: "Plain-text FILE: block contract for file generation"
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [build, file-output, agent-contract]
 related: [ADR-0003, ADR-0005, ADR-0009]

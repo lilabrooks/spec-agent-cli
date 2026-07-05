@@ -4,6 +4,7 @@ title: Bundle default specs/skills into the wheel, working directory wins
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [packaging, resources, pipx]
 related: [ADR-0004, ADR-0005]

@@ -7,14 +7,14 @@
 #                    this on push, so reach for it mainly to reproduce a
 #                    version-specific failure locally.
 #
-# Individual targets (lint, typecheck, test, coverage) are available too.
+# Individual targets (lint, typecheck, test, okf, coverage) are available too.
 
-PYTHON ?= python
+PYTHON ?= python3
 VERSIONS ?= 3.12 3.13 3.14
 
-.PHONY: check lint format typecheck test coverage check-all
+.PHONY: check lint format typecheck test okf coverage check-all
 
-check: lint typecheck test
+check: lint typecheck test okf
 
 lint:
 	ruff check .
@@ -28,6 +28,9 @@ typecheck:
 
 test:
 	pytest
+
+okf:
+	$(PYTHON) scripts/check-okf-docs.py
 
 coverage:
 	coverage run -m pytest
@@ -43,6 +46,7 @@ check-all:
 		uv run --python $$v --extra dev -- ruff check . && \
 		uv run --python $$v --extra dev -- ruff format --check . && \
 		uv run --python $$v --extra dev -- mypy && \
-		uv run --python $$v --extra dev -- pytest || exit 1; \
+		uv run --python $$v --extra dev -- pytest && \
+		uv run --python $$v --extra dev -- python scripts/check-okf-docs.py || exit 1; \
 	done
 	@echo "All versions passed."

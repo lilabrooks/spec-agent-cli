@@ -1,5 +1,7 @@
 ---
 source:
+owner: Lila Brooks
+deciders: [Lila Brooks]
 ---
 # Skill name
 

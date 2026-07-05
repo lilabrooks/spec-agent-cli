@@ -4,6 +4,7 @@ title: Zero runtime dependencies; provider SDKs as optional extras with deferred
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [dependencies, packaging]
 related: [ADR-0003, ADR-0005]

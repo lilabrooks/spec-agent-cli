@@ -4,6 +4,7 @@ title: Thin hexagonal architecture with inward-only imports
 type: adr
 status: accepted
 date: 2026-07-04
+owner: Lila Brooks
 deciders: [Lila Brooks]
 tags: [architecture, layering]
 related: [ADR-0003]

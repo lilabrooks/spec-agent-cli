@@ -1,6 +1,7 @@
 ---
 status: draft
 owner: product
+deciders: [Lila Brooks]
 ---
 # my-cli machine details command
 

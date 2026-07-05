@@ -4,12 +4,17 @@ type: log
 status: current
 date: 2026-07-04
 owner: Lila Brooks
+deciders: [Lila Brooks]
 tags: [documentation, log]
 ---
 
 # Documentation log
 
 Dated changes to the docs bundle, newest first.
+
+## 2026-07-05
+
+- Added OKF docs validation to `make check`, `make check-all`, and the code-quality workflow, and recorded the decision in ADR-0010.
 
 ## 2026-07-04
 
