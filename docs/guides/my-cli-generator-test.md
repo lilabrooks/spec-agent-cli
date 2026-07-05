@@ -15,7 +15,9 @@ This guide shows how to test the `my-cli` generated CLI fixture in this repo.
 ## 1. Enter the project
 
 ```bash
-cd "/Users/lilabrooks/Documents/Python CLI"
+# Skip the clone step if you already have a local checkout.
+git clone https://github.com/lilabrooks/spec-agent-cli.git
+cd spec-agent-cli
 source .venv/bin/activate
 ```
 

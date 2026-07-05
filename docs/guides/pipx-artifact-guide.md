@@ -54,7 +54,9 @@ pipx uninstall ai-agent-cli
 ## 2. Enter the project for local artifact builds
 
 ```bash
-cd "/Users/lilabrooks/Documents/Python CLI"
+# Skip the clone step if you already have a local checkout.
+git clone https://github.com/lilabrooks/spec-agent-cli.git
+cd spec-agent-cli
 source .venv/bin/activate
 ```
 
