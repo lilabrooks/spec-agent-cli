@@ -1,3 +1,12 @@
+---
+title: pipx artifact guide
+type: guide
+status: current
+date: 2026-07-04
+owner: Lila Brooks
+tags: [documentation, guide, pipx, packaging]
+---
+
 # pipx artifact guide
 
 This guide shows how to install from GitHub, create an installable artifact, and test both paths with pipx.

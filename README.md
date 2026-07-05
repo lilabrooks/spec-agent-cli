@@ -1,12 +1,15 @@
 # Spec Agent CLI
 
+[![Status](https://img.shields.io/badge/status-preview-orange)](#project-status)
 [![Tests](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml)
 [![Code quality](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml)
 [![Coverage](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/coverage.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/coverage.yml)
-![Spec-driven](https://img.shields.io/badge/spec--driven-Markdown-blue)
-![Agent-ready](https://img.shields.io/badge/agent--ready-yes-green)
-![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)
-![pipx installable](https://img.shields.io/badge/pipx-installable-blue)
+[![Spec-driven](https://img.shields.io/badge/spec--driven-Markdown-blue)](#spec-workflow)
+[![Agent-ready](https://img.shields.io/badge/agent--ready-yes-green)](#skill-workflow)
+[![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)](#provider-design)
+[![pipx installable](https://img.shields.io/badge/pipx-installable-blue)](docs/guides/pipx-artifact-guide.md)
+[![docs - OKF 0.1](https://img.shields.io/badge/docs-OKF%200.1-blue)](docs/index.md)
+[![specs & ADRs - included](https://img.shields.io/badge/specs%20%26%20ADRs-included-teal)](docs/specs/index.md)
 
 A Python 3.12+ starter project for building spec-driven CLI generators. It combines Markdown CLI specs, reusable agent skills, strict Python quality checks, and pluggable model providers without tying the application to one vendor, API, or model family.
 

@@ -1,3 +1,12 @@
+---
+title: my-cli generator test
+type: guide
+status: current
+date: 2026-07-04
+owner: Lila Brooks
+tags: [documentation, guide, testing, my-cli]
+---
+
 # my-cli generator test
 
 This guide shows how to test the `my-cli` generated CLI fixture in this repo.

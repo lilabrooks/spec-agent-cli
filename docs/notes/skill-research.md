@@ -1,3 +1,12 @@
+---
+title: Skill research notes
+type: note
+status: current
+date: 2026-07-04
+owner: Lila Brooks
+tags: [documentation, notes, skills, research]
+---
+
 # Skill research notes
 
 These project skills were added after checking current public documentation for Python CLI structure, clean Python, and CLI behavior.
