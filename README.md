@@ -9,6 +9,7 @@
 [![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)](#provider-design)
 [![pipx installable](https://img.shields.io/badge/pipx-installable-blue)](docs/guides/pipx-artifact-guide.md)
 [![docs - OKF 0.1](https://img.shields.io/badge/docs-OKF%200.1-blue)](docs/index.md)
+[![OKF docs validated](https://img.shields.io/badge/OKF%20docs-validated-brightgreen)](#quality-standard)
 [![specs & ADRs - included](https://img.shields.io/badge/specs%20%26%20ADRs-included-teal)](docs/specs/index.md)
 
 A Python 3.12+ starter project for building spec-driven CLI generators. It combines Markdown CLI specs, reusable agent skills, strict Python quality checks, and pluggable model providers without tying the application to one vendor, API, or model family.

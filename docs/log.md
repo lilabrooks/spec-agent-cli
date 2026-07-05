@@ -14,6 +14,7 @@ Dated changes to the docs bundle, newest first.
 
 ## 2026-07-05
 
+- Added a static README OKF docs validated badge that links to the quality standard section.
 - Added OKF docs validation to `make check`, `make check-all`, and the code-quality workflow, and recorded the decision in ADR-0010.
 
 ## 2026-07-04
