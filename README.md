@@ -212,6 +212,16 @@ agent skill check
 
 Heads-up: `pip install -e ".[dev]"` is an **editable** install, so `agent` runs straight from `src/` and never triggers a wheel build. That means the bundled copy of `specs/` and `skills/` under `agent_cli/_bundled/` (see [`resources.py`](src/agent_cli/resources.py)) does not exist yet — `default_spec_root()`/`default_skill_root()` fall back to the checkout's own `specs/cli/` and `skills/agent/`, so spec/skill slugs and `agent build`'s automatic `file-output-contract` attachment only resolve while your current directory is inside this checkout. Run a real (non-editable) install — `pip install .` or `pipx install .` — to get the bundled copy and use `agent` from any directory instead. `--spec`/`--skill` pointed at an explicit file path work either way, since that path is checked before any root lookup.
 
+### Dependency scanning
+
+`requirements.txt` exists for GitHub-based dependency scanners such as Snyk. The application runtime still has no required third-party dependencies; the file mirrors the optional provider SDKs and development tools from `pyproject.toml` so scanners that look for a root pip manifest have concrete packages to inspect.
+
+Use `pyproject.toml` as the source of truth when changing dependencies. If you add, remove, or bump packages in `[project.optional-dependencies]`, update `requirements.txt` in the same change. Do not install from `requirements.txt` for normal development; use the editable install shown above:
+
+```bash
+python -m pip install -e ".[dev]"
+```
+
 ## Spec Workflow
 
 Write CLI requirements as Markdown specs in `specs/cli/`. Use `specs/templates/cli-spec.md` as the starting point.
@@ -502,6 +512,7 @@ The fixture spec is [specs/cli/my-cli-details.md](specs/cli/my-cli-details.md). 
 │   └── templates/          # Reusable spec templates
 ├── tests/                  # Fast unit tests
 ├── docs/                   # ADRs, component specs, guides, contributing
+├── requirements.txt        # Snyk-friendly scan manifest; mirrors optional/dev deps
 └── pyproject.toml          # Packaging, tools, and CLI entry points
 ```
 
@@ -547,6 +558,8 @@ Use pytest for behavior tests. Prefer function-level tests with fixtures such as
 Ruff handles linting and formatting, and mypy runs in strict mode. Run them together with `make check`, or individually as shown in [Development Setup](#development-setup).
 
 Runtime code should stay dependency-free unless a spec requires a dependency. Development-only tools belong in the `dev` optional dependency group.
+
+`requirements.txt` is for dependency scanners, not the install contract. Keep it in sync with optional and development dependencies in `pyproject.toml` whenever those packages change.
 
 ## Additional Docs
 

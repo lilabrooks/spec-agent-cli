@@ -14,6 +14,7 @@ Dated changes to the docs bundle, newest first.
 
 ## 2026-07-05
 
+- Documented the root `requirements.txt` as a Snyk-friendly scan manifest that mirrors optional and development dependencies from `pyproject.toml`, including the decision record in ADR-0004.
 - Added a static README OKF docs validated badge that links to the quality standard section.
 - Added OKF docs validation to `make check`, `make check-all`, and the code-quality workflow, and recorded the decision in ADR-0010.
 

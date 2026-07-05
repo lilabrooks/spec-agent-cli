@@ -45,6 +45,8 @@ mypy runs in strict mode against the package. Public functions should have typed
 
 Repo-level invariants (version consistency everywhere it appears, document validity, quality gates) are enforced by `tests/test_repo_health.py` and specified in [SPEC-008](specs/spec-008-repository-health.md).
 
+`pyproject.toml` is the dependency source of truth. The root `requirements.txt` exists so GitHub-based dependency scanners such as Snyk can inspect the optional provider SDKs and development tools with a standard pip manifest. Keep it synchronized with `[project.optional-dependencies]`, but keep normal development installs on `pip install -e ".[dev]"`.
+
 ## Where behavior is specified
 
 Details that used to live in this file are now specified per component:
