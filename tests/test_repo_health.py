@@ -17,6 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 ARTIFACT_VERSION = re.compile(r"ai_agent_cli-(\d+\.\d+\.\d+)")
 TAG_VERSION = re.compile(r"@v(\d+\.\d+\.\d+)")
+PINNED_REQUIREMENT = re.compile(r"^[A-Za-z0-9_.-]+(?:\[[A-Za-z0-9_,.-]+\])?==")
 
 
 def declared_version() -> str:
@@ -24,6 +25,21 @@ def declared_version() -> str:
     version = data["project"]["version"]
     assert isinstance(version, str)
     return version
+
+
+def project_metadata() -> dict[str, object]:
+    data = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    project = data["project"]
+    assert isinstance(project, dict)
+    return project
+
+
+def scanner_requirements() -> list[str]:
+    return [
+        line.strip()
+        for line in (REPO_ROOT / "requirements.txt").read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
 
 
 def test_package_version_matches_pyproject() -> None:
@@ -69,6 +85,22 @@ def test_doc_frontmatter_version_matches_pyproject() -> None:
             if found != version
         )
     assert not stale, f"stale frontmatter versions (expected {version}): {stale}"
+
+
+def test_scanner_requirements_mirror_optional_dependencies() -> None:
+    optional_dependencies = project_metadata()["optional-dependencies"]
+    assert isinstance(optional_dependencies, dict)
+    expected = sorted(
+        dependency for dependencies in optional_dependencies.values() for dependency in dependencies
+    )
+    actual = sorted(scanner_requirements())
+    missing = sorted(set(expected) - set(actual))
+    assert not missing, f"requirements.txt is missing optional dependencies: {missing}"
+
+
+def test_scanner_requirements_avoid_exact_pins() -> None:
+    pinned = [line for line in scanner_requirements() if PINNED_REQUIREMENT.match(line)]
+    assert not pinned, f"requirements.txt should use lower bounds, not exact pins: {pinned}"
 
 
 def test_bundled_specs_pass_validation() -> None:

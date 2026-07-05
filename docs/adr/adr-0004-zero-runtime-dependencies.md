@@ -19,7 +19,7 @@ A scaffold that people install via pipx and fork for their own tools should be c
 ## Decision
 
 - `[project] dependencies` stays empty: the runtime is stdlib-only (argparse, dataclasses, pathlib, importlib.resources). Development tooling lives in the `dev` extra.
-- Vendor SDKs are opt-in extras: `pip install ".[anthropic]"` or `".[openai]"`.
+- Vendor SDKs are opt-in extras: `pip install ".[anthropic]"` or `".[openai]"`. Provider extras may include narrow transitive lower-bound constraints when a security scanner identifies a vulnerable resolver floor, such as `anyio>=4.4.0`, `h11>=0.16.0`, `idna>=3.15`, or `zipp>=3.19.1` for the `openai` extra.
 - `pyproject.toml` remains the dependency source of truth. The root `requirements.txt` is a scanner manifest for GitHub-based tools such as Snyk, mirroring optional provider SDKs and development tools so those scanners can inspect concrete package names.
 - Adapter modules import their SDK **inside `complete()`**, not at module top, so `providers/registry.py` can import every adapter unconditionally and `agent providers`, `run --provider echo`, and all tests work with neither SDK installed. mypy overrides mark both modules `ignore_missing_imports`.
 - API keys are never read by this package; each SDK picks up its own `*_API_KEY` from the environment when instantiated.

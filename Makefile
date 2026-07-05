@@ -9,7 +9,10 @@
 #
 # Individual targets (lint, typecheck, test, okf, coverage) are available too.
 
-PYTHON ?= python3
+PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
+RUFF ?= $(if $(wildcard .venv/bin/ruff),.venv/bin/ruff,ruff)
+MYPY ?= $(if $(wildcard .venv/bin/mypy),.venv/bin/mypy,mypy)
+PYTEST ?= $(if $(wildcard .venv/bin/pytest),.venv/bin/pytest,pytest)
 VERSIONS ?= 3.12 3.13 3.14
 SNYK ?= snyk
 SNYK_ORG ?=
@@ -25,24 +28,28 @@ SNYK_PYTHON_ARG := $(if $(wildcard $(SNYK_PYTHON)),--command=$(SNYK_PYTHON),)
 check: lint typecheck test okf
 
 lint:
-	ruff check .
-	ruff format --check .
+	$(RUFF) check .
+	$(RUFF) format --check .
 
 format:
-	ruff format .
+	$(RUFF) format .
 
 typecheck:
-	mypy
+	$(MYPY)
 
 test:
-	pytest
+	$(PYTEST)
 
 okf:
 	$(PYTHON) scripts/check-okf-docs.py
 
 coverage:
-	coverage run -m pytest
-	coverage report
+	@$(PYTHON) -c 'import coverage' >/dev/null 2>&1 || { \
+		echo "coverage is not installed. Run '$(PYTHON) -m pip install -e \".[dev]\"'."; \
+		exit 127; \
+	}
+	$(PYTHON) -m coverage run -m pytest
+	$(PYTHON) -m coverage report
 
 snyk: snyk-open-source snyk-code
 

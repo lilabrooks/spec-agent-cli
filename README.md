@@ -191,6 +191,8 @@ Run lint, type-check, and tests on the active interpreter with a single command:
 make check
 ```
 
+`make check` uses tools from `.venv/bin/` when that virtualenv exists, so it works from a normal shell after the editable install without manually prefixing `PATH`. If an optional quality target reports a missing dev tool, refresh the environment with `python -m pip install -e ".[dev]"`.
+
 The underlying tools can also be run individually:
 
 ```bash
@@ -247,7 +249,7 @@ The Open Source target uses `.venv/bin/python` when that virtualenv exists, beca
 make snyk-open-source SNYK_PYTHON=/path/to/python
 ```
 
-For dependency findings, update `pyproject.toml` first, then mirror the same package change in `requirements.txt`. For Snyk Code findings, change the source or tests directly. Use `snyk ignore` only for Open Source findings that have a documented reason and expiry; Snyk's local `.snyk` issue ignores do not apply to Snyk Code findings.
+For dependency findings, update `pyproject.toml` first, then mirror the same package change in `requirements.txt`. If Snyk flags a vulnerable transitive dependency from an optional provider SDK, add a direct lower-bound constraint to the relevant extra and mirror it in `requirements.txt`; for example, the `openai` extra constrains `anyio>=4.4.0`, `h11>=0.16.0`, `idna>=3.15`, and `zipp>=3.19.1` to avoid vulnerable resolver choices through its transitive dependencies. For Snyk Code findings, change the source or tests directly. Use `snyk ignore` only for Open Source findings that have a documented reason and expiry; Snyk's local `.snyk` issue ignores do not apply to Snyk Code findings.
 
 ## Spec Workflow
 
@@ -586,7 +588,7 @@ Ruff handles linting and formatting, and mypy runs in strict mode. Run them toge
 
 Runtime code should stay dependency-free unless a spec requires a dependency. Development-only tools belong in the `dev` optional dependency group.
 
-`requirements.txt` is for dependency scanners, not the install contract. Keep it in sync with optional and development dependencies in `pyproject.toml` whenever those packages change.
+`requirements.txt` is for dependency scanners, not the install contract. Keep it in sync with optional and development dependencies in `pyproject.toml` whenever those packages change, including any direct lower-bound constraints added to keep transitive dependencies on fixed versions.
 
 When Snyk reports a new issue, reproduce it locally with `make snyk-open-source` or `make snyk-code`, fix it, then run `make check` before committing.
 

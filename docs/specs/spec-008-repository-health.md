@@ -56,7 +56,13 @@ The OKF-style documentation bundle must keep its structure and metadata intact:
 
 **Enforced by** `scripts/check-okf-docs.py`, which runs in `make check` and the code-quality workflow.
 
-### 4. Quality gates
+### 4. Scanner dependencies stay synchronized
+
+`requirements.txt` exists for Snyk scanning and must remain a mirror of the optional dependency groups in `pyproject.toml`, including security lower-bound constraints. It should use lower bounds such as `h11>=0.16.0`, not exact pins such as `h11==0.16.0`, because this package is a reusable scaffold rather than a deployment lockfile.
+
+**Enforced by** `tests/test_repo_health.py`, which fails if an optional dependency is missing from `requirements.txt` or if `requirements.txt` contains an exact pin.
+
+### 5. Quality gates
 
 - ruff lint and format checks pass with the configured rule set.
 - mypy passes in `strict` mode over the package.
@@ -69,10 +75,10 @@ The OKF-style documentation bundle must keep its structure and metadata intact:
 
 - A git tag `v<x.y.z>` should exist for each CHANGELOG release heading once published.
 - Snyk dashboard findings should be reproduced locally with `make snyk-open-source` for dependency/license findings or `make snyk-code` for SAST findings. These targets require an installed, authenticated Snyk CLI and may need `SNYK_ORG=<org-slug-or-id>` to match the dashboard project, so they stay outside `make check`. The Open Source target should pass the repo virtualenv through Snyk's Python `--command` option when `.venv/bin/python` exists.
-- `requirements.txt` must mirror the optional provider SDKs and development tools declared in `pyproject.toml` whenever those package sets change. It exists for scanner visibility, not as the package install contract (ADR-0004).
+- Snyk dashboard fixes should be added as lower-bound constraints in `pyproject.toml` and mirrored in `requirements.txt`, unless the project deliberately adopts a lockfile later.
 
 ## Acceptance tests
 
-`tests/test_repo_health.py` — six tests: package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, spec validation, skill validation.
+`tests/test_repo_health.py` — package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, Snyk scanner manifest synchronization, exact-pin prevention, spec validation, and skill validation.
 
 `scripts/check-okf-docs.py` — validates OKF-style frontmatter, required docs bundle files, and local Markdown links. All checks must pass for `make check` to succeed.

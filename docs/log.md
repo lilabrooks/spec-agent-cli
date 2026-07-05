@@ -14,6 +14,9 @@ Dated changes to the docs bundle, newest first.
 
 ## 2026-07-05
 
+- Updated local Make targets to use `.venv/bin` quality tools when the repo virtualenv exists and to report missing coverage tooling clearly.
+- Added repo-health coverage that keeps `requirements.txt` synchronized with optional dependencies and prevents exact scanner pins.
+- Added `anyio>=4.4.0`, `h11>=0.16.0`, `idna>=3.15`, and `zipp>=3.19.1` lower-bound constraints for the `openai` extra and Snyk scan manifest to address SNYK-PYTHON-ANYIO-7361842, SNYK-PYTHON-H11-10293728, SNYK-PYTHON-IDNA-16769942, and SNYK-PYTHON-ZIPP-7430899.
 - Added local Snyk Make targets and documented how to reproduce dashboard findings before fixing them, including Python resolver options and the advisory repo-health expectation in SPEC-008.
 - Documented the root `requirements.txt` as a Snyk-friendly scan manifest that mirrors optional and development dependencies from `pyproject.toml`, including the decision record in ADR-0004.
 - Added a static README OKF docs validated badge that links to the quality standard section.
