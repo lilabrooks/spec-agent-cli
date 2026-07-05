@@ -9,7 +9,7 @@ tags: [documentation, specs]
 
 # Component Specifications
 
-These specs describe the architecture and behavior of the `agent` CLI as it exists today. They are documentation of the shipped code, not proposals — the source of truth for planned CLI features remains the repo-root `specs/cli/` folder that `agent spec check` validates.
+These specs describe the architecture and behavior of the `agent` CLI as it exists today. They document the shipped code. The source of truth for planned CLI features remains the repo-root `specs/cli/` folder that `agent spec check` validates.
 
 Each file starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `version`, `date`, `owner`, `components`, `tags`, `related`).
 
@@ -25,4 +25,4 @@ Each file starts with a YAML frontmatter block (`id`, `title`, `type`, `status`,
 | SPEC-007 | [Resource resolution](spec-007-resource-resolution.md) | Working-directory vs. bundled spec/skill roots |
 | SPEC-008 | [Repository health invariants](spec-008-repository-health.md) | Version consistency, document validity, quality gates |
 
-Architecture decisions behind these components are recorded separately in [docs/adr/](../adr/README.md).
+Architecture decisions behind these components are recorded separately in [docs/adr/](../adr/index.md).

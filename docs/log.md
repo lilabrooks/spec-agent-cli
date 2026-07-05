@@ -1,0 +1,27 @@
+---
+title: Documentation log
+type: log
+status: current
+date: 2026-07-04
+owner: Lila Brooks
+tags: [documentation, log]
+---
+
+# Documentation log
+
+Dated changes to the docs bundle, newest first.
+
+## 2026-07-04
+
+- Adopted the bundle layout: `index.md` at the bundle root and in `specs/` and `adr/`, plus this `log.md`.
+- Moved the pipx artifact guide and the my-cli generator test guide into `guides/`.
+- Moved `skill-research.md` into `notes/`.
+- Replaced `architecture.md` with `contributing.md`. Component behavior moved to `specs/`, decision rationale to `adr/`.
+- Added component specifications SPEC-000 through SPEC-008 with an index.
+- Added architecture decision records ADR-0001 through ADR-0009 with an index.
+
+## 2026-07-02
+
+- Updated the spec-agent CLI flow diagram in `assets/`.
+- Added the pipx artifact guide and the my-cli generator test guide.
+- Added `architecture.md` in the initial commit.

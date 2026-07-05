@@ -41,7 +41,7 @@ def test_changelog_latest_entry_matches_pyproject() -> None:
 
 def test_docs_reference_current_version() -> None:
     version = declared_version()
-    docs = [REPO_ROOT / "README.md", *sorted((REPO_ROOT / "docs").glob("*.md"))]
+    docs = [REPO_ROOT / "README.md", *sorted((REPO_ROOT / "docs").rglob("*.md"))]
     stale: list[str] = []
     for doc in docs:
         text = doc.read_text(encoding="utf-8")

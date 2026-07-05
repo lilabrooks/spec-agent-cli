@@ -82,7 +82,7 @@ agent providers
 my-cli --basic
 ```
 
-The default specs and skills ship inside the package, so `agent spec` and `agent skill` work from any directory after install. For a complete pipx and artifact guide, see [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md).
+The default specs and skills ship inside the package, so `agent spec` and `agent skill` work from any directory after install. For a complete pipx and artifact guide, see [docs/guides/pipx-artifact-guide.md](docs/guides/pipx-artifact-guide.md).
 
 ## Configuration
 
@@ -474,7 +474,7 @@ my-cli --basic
 my-cli --detailed
 ```
 
-The fixture spec is [specs/cli/my-cli-details.md](specs/cli/my-cli-details.md). The step-by-step test guide is [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md).
+The fixture spec is [specs/cli/my-cli-details.md](specs/cli/my-cli-details.md). The step-by-step test guide is [docs/guides/my-cli-generator-test.md](docs/guides/my-cli-generator-test.md).
 
 ## Project Layout
 
@@ -497,7 +497,7 @@ The fixture spec is [specs/cli/my-cli-details.md](specs/cli/my-cli-details.md). 
 │   ├── cli/                # CLI specs the agent can work from
 │   └── templates/          # Reusable spec templates
 ├── tests/                  # Fast unit tests
-├── docs/                   # Architecture, pipx, and fixture guides
+├── docs/                   # ADRs, component specs, guides, contributing
 └── pyproject.toml          # Packaging, tools, and CLI entry points
 ```
 
@@ -547,10 +547,13 @@ Runtime code should stay dependency-free unless a spec requires a dependency. De
 ## Additional Docs
 
 - [CHANGELOG.md](CHANGELOG.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/pipx-artifact-guide.md](docs/pipx-artifact-guide.md)
-- [docs/my-cli-generator-test.md](docs/my-cli-generator-test.md)
-- [docs/skill-research.md](docs/skill-research.md)
+- [docs/index.md](docs/index.md) (documentation index)
+- [docs/log.md](docs/log.md) (documentation changelog)
+- [docs/contributing.md](docs/contributing.md)
+- [docs/adr/](docs/adr/index.md) (architecture decision records)
+- [docs/specs/](docs/specs/index.md) (component specifications)
+- [docs/guides/pipx-artifact-guide.md](docs/guides/pipx-artifact-guide.md)
+- [docs/guides/my-cli-generator-test.md](docs/guides/my-cli-generator-test.md)
 - [skills/README.md](skills/README.md)
 - [specs/README.md](specs/README.md)
 

@@ -16,7 +16,7 @@ skills/
 └── templates/    # Reusable skill templates
 ```
 
-These skills are inspired by `multica-ai/andrej-karpathy-skills`, adapted for this vendor-neutral Python CLI project.
+These skills are inspired by `multica-ai/andrej-karpathy-skills`, adapted for this vendor-neutral Python CLI project. The sources checked when writing them are recorded in [docs/notes/skill-research.md](../docs/notes/skill-research.md).
 
 ## Skill selection
 

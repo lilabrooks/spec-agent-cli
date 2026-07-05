@@ -29,7 +29,7 @@ Define the repo-level consistency rules that must hold on every commit, independ
 
 - `agent_cli.__version__` in `src/agent_cli/__init__.py`.
 - The newest `## [x.y.z]` release heading in `CHANGELOG.md` (older headings are history and exempt).
-- Every `ai_agent_cli-<x.y.z>` artifact name and `@v<x.y.z>` git-tag reference in `README.md` and `docs/*.md`.
+- Every `ai_agent_cli-<x.y.z>` artifact name and `@v<x.y.z>` git-tag reference in `README.md` and `docs/**/*.md`.
 - Every `version:` field in the YAML frontmatter of documents under `docs/` (the component specs in `docs/specs/`).
 
 **Enforced by** `tests/test_repo_health.py` (version tests), which run in `make check` and CI. A version bump that misses any of these files now fails the suite instead of shipping silently.

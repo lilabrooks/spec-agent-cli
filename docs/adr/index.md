@@ -9,7 +9,7 @@ tags: [documentation, adr]
 
 # Architecture Decision Records
 
-Decisions that shaped this codebase, recorded after the fact from the shipped code, `docs/architecture.md`, and the git history. Each ADR starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `date`, `deciders`, `tags`, `related`) and follows the Context / Decision / Consequences shape described in ADR-0001.
+Decisions that shaped this codebase, recorded after the fact from the shipped code, the architecture notes now in [contributing.md](../contributing.md), and the git history. Each ADR starts with a YAML frontmatter block (`id`, `title`, `type`, `status`, `date`, `deciders`, `tags`, `related`) and follows the Context / Decision / Consequences shape described in ADR-0001.
 
 | ID | Decision | Status |
 | --- | --- | --- |
@@ -23,4 +23,4 @@ Decisions that shaped this codebase, recorded after the fact from the shipped co
 | [ADR-0008](adr-0008-env-var-configuration.md) | Environment-variable-only configuration, no `.env` auto-loading | accepted |
 | [ADR-0009](adr-0009-safe-by-default-build-writes.md) | Safe-by-default build writes: plan first, no silent overwrite, no path escape | accepted |
 
-The component-level behavior these decisions produce is specified in [docs/specs/](../specs/README.md).
+The component-level behavior these decisions produce is specified in [docs/specs/](../specs/index.md).
