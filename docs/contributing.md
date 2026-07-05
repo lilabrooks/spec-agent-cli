@@ -47,6 +47,8 @@ Repo-level invariants (version consistency everywhere it appears, document valid
 
 `pyproject.toml` is the dependency source of truth. The root `requirements.txt` exists so GitHub-based dependency scanners such as Snyk can inspect the optional provider SDKs and development tools with a standard pip manifest. Keep it synchronized with `[project.optional-dependencies]`, but keep normal development installs on `pip install -e ".[dev]"`.
 
+Snyk dashboard findings should be reproduced locally before changing code. Use `make snyk-open-source` for dependency findings and `make snyk-code` for SAST findings. If the local CLI account belongs to multiple Snyk organizations, pass `SNYK_ORG=<org-slug-or-id>` so results match the dashboard project. The Open Source target uses `.venv/bin/python` when present; pass `SNYK_PYTHON=/path/to/python` if you need a different interpreter.
+
 ## Where behavior is specified
 
 Details that used to live in this file are now specified per component:

@@ -222,6 +222,33 @@ Use `pyproject.toml` as the source of truth when changing dependencies. If you a
 python -m pip install -e ".[dev]"
 ```
 
+To reproduce Snyk dashboard findings locally, install the Snyk CLI, authenticate with `snyk auth`, and run:
+
+```bash
+make snyk
+```
+
+The combined target runs both scans that matter for this repo:
+
+```bash
+make snyk-open-source  # dependency and license findings from requirements.txt
+make snyk-code         # source-code findings from Snyk Code
+```
+
+If your Snyk account has multiple organizations, pass the same org used by the dashboard project:
+
+```bash
+make snyk SNYK_ORG=<org-slug-or-id>
+```
+
+The Open Source target uses `.venv/bin/python` when that virtualenv exists, because Snyk's Python scanner shells out to Python to resolve dependency data. If you use another interpreter, pass it explicitly:
+
+```bash
+make snyk-open-source SNYK_PYTHON=/path/to/python
+```
+
+For dependency findings, update `pyproject.toml` first, then mirror the same package change in `requirements.txt`. For Snyk Code findings, change the source or tests directly. Use `snyk ignore` only for Open Source findings that have a documented reason and expiry; Snyk's local `.snyk` issue ignores do not apply to Snyk Code findings.
+
 ## Spec Workflow
 
 Write CLI requirements as Markdown specs in `specs/cli/`. Use `specs/templates/cli-spec.md` as the starting point.
@@ -560,6 +587,8 @@ Ruff handles linting and formatting, and mypy runs in strict mode. Run them toge
 Runtime code should stay dependency-free unless a spec requires a dependency. Development-only tools belong in the `dev` optional dependency group.
 
 `requirements.txt` is for dependency scanners, not the install contract. Keep it in sync with optional and development dependencies in `pyproject.toml` whenever those packages change.
+
+When Snyk reports a new issue, reproduce it locally with `make snyk-open-source` or `make snyk-code`, fix it, then run `make check` before committing.
 
 ## Additional Docs
 

@@ -11,8 +11,16 @@
 
 PYTHON ?= python3
 VERSIONS ?= 3.12 3.13 3.14
+SNYK ?= snyk
+SNYK_ORG ?=
+SNYK_PYTHON ?= .venv/bin/python
+SNYK_SKIP_UNRESOLVED ?= true
+SNYK_OPEN_SOURCE_SEVERITY ?= low
+SNYK_CODE_SEVERITY ?= low
+SNYK_ORG_ARG := $(if $(SNYK_ORG),--org=$(SNYK_ORG),)
+SNYK_PYTHON_ARG := $(if $(wildcard $(SNYK_PYTHON)),--command=$(SNYK_PYTHON),)
 
-.PHONY: check lint format typecheck test okf coverage check-all
+.PHONY: check lint format typecheck test okf coverage snyk snyk-open-source snyk-code check-all
 
 check: lint typecheck test okf
 
@@ -35,6 +43,22 @@ okf:
 coverage:
 	coverage run -m pytest
 	coverage report
+
+snyk: snyk-open-source snyk-code
+
+snyk-open-source:
+	@command -v $(SNYK) >/dev/null 2>&1 || { \
+		echo "snyk CLI not found. Install it, then run 'snyk auth'."; \
+		exit 127; \
+	}
+	$(SNYK) test --file=requirements.txt --package-manager=pip --severity-threshold=$(SNYK_OPEN_SOURCE_SEVERITY) --skip-unresolved=$(SNYK_SKIP_UNRESOLVED) $(SNYK_PYTHON_ARG) $(SNYK_ORG_ARG)
+
+snyk-code:
+	@command -v $(SNYK) >/dev/null 2>&1 || { \
+		echo "snyk CLI not found. Install it, then run 'snyk auth'."; \
+		exit 127; \
+	}
+	$(SNYK) code test --severity-threshold=$(SNYK_CODE_SEVERITY) $(SNYK_ORG_ARG) .
 
 check-all:
 	@command -v uv >/dev/null 2>&1 || { \

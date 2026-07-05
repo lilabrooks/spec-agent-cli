@@ -11,11 +11,12 @@ components:
   - tests/test_repo_health.py
   - scripts/check-okf-docs.py
   - pyproject.toml
+  - requirements.txt
   - CHANGELOG.md
   - Makefile
   - .github/workflows/code-quality.yml
-tags: [health, versioning, quality, ci]
-related: [SPEC-000, SPEC-005, ADR-0010]
+tags: [health, versioning, quality, ci, security]
+related: [SPEC-000, SPEC-005, ADR-0004, ADR-0010]
 ---
 
 # Repository Health Invariants
@@ -67,6 +68,8 @@ The OKF-style documentation bundle must keep its structure and metadata intact:
 ## Advisory (not hard-enforced)
 
 - A git tag `v<x.y.z>` should exist for each CHANGELOG release heading once published.
+- Snyk dashboard findings should be reproduced locally with `make snyk-open-source` for dependency/license findings or `make snyk-code` for SAST findings. These targets require an installed, authenticated Snyk CLI and may need `SNYK_ORG=<org-slug-or-id>` to match the dashboard project, so they stay outside `make check`. The Open Source target should pass the repo virtualenv through Snyk's Python `--command` option when `.venv/bin/python` exists.
+- `requirements.txt` must mirror the optional provider SDKs and development tools declared in `pyproject.toml` whenever those package sets change. It exists for scanner visibility, not as the package install contract (ADR-0004).
 
 ## Acceptance tests
 
