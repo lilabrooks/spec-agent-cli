@@ -16,12 +16,15 @@ PYTEST ?= $(if $(wildcard .venv/bin/pytest),.venv/bin/pytest,pytest)
 VERSIONS ?= 3.12 3.13 3.14
 SNYK ?= snyk
 SNYK_ORG ?=
-SNYK_PYTHON ?= .venv/bin/python
+# Snyk's pip scanner shells out to a `python` executable to resolve the
+# dependency tree. Prefer the project venv; fall back to python3 so a bare
+# checkout without an activated venv still works (macOS has no plain `python`).
+SNYK_PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 SNYK_SKIP_UNRESOLVED ?= true
 SNYK_OPEN_SOURCE_SEVERITY ?= low
 SNYK_CODE_SEVERITY ?= low
 SNYK_ORG_ARG := $(if $(SNYK_ORG),--org=$(SNYK_ORG),)
-SNYK_PYTHON_ARG := $(if $(wildcard $(SNYK_PYTHON)),--command=$(SNYK_PYTHON),)
+SNYK_PYTHON_ARG := --command=$(SNYK_PYTHON)
 
 .PHONY: check lint format typecheck test okf coverage snyk snyk-open-source snyk-code check-all
 
