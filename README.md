@@ -4,6 +4,7 @@
 [![Tests](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/tests.yml)
 [![Code quality](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/code-quality.yml)
 [![Coverage](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/coverage.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/coverage.yml)
+[![Snyk](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/snyk.yml/badge.svg)](https://github.com/lilabrooks/spec-agent-cli/actions/workflows/snyk.yml)
 [![Spec-driven](https://img.shields.io/badge/spec--driven-Markdown-blue)](#spec-workflow)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-yes-green)](#skill-workflow)
 [![Model-agnostic](https://img.shields.io/badge/model--agnostic-yes-purple)](#provider-design)
