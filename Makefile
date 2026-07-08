@@ -20,7 +20,6 @@ SNYK_ORG ?=
 # dependency tree. Prefer the project venv; fall back to python3 so a bare
 # checkout without an activated venv still works (macOS has no plain `python`).
 SNYK_PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
-SNYK_SKIP_UNRESOLVED ?= true
 SNYK_OPEN_SOURCE_SEVERITY ?= low
 SNYK_CODE_SEVERITY ?= low
 SNYK_ORG_ARG := $(if $(SNYK_ORG),--org=$(SNYK_ORG),)
@@ -56,12 +55,18 @@ coverage:
 
 snyk: snyk-open-source snyk-code
 
+# Install the full requirements.txt into the scanning interpreter first so Snyk
+# resolves the complete transitive tree. Without this, packages that aren't
+# installed can't be resolved, and --skip-unresolved would silently drop them
+# from the scan (under-reporting vulns) while the Snyk dashboard, which resolves
+# everything server-side, still flags them.
 snyk-open-source:
 	@command -v $(SNYK) >/dev/null 2>&1 || { \
 		echo "snyk CLI not found. Install it, then run 'snyk auth'."; \
 		exit 127; \
 	}
-	$(SNYK) test --file=requirements.txt --package-manager=pip --severity-threshold=$(SNYK_OPEN_SOURCE_SEVERITY) --skip-unresolved=$(SNYK_SKIP_UNRESOLVED) $(SNYK_PYTHON_ARG) $(SNYK_ORG_ARG)
+	$(SNYK_PYTHON) -m pip install -q -r requirements.txt
+	$(SNYK) test --file=requirements.txt --package-manager=pip --severity-threshold=$(SNYK_OPEN_SOURCE_SEVERITY) $(SNYK_PYTHON_ARG) $(SNYK_ORG_ARG)
 
 snyk-code:
 	@command -v $(SNYK) >/dev/null 2>&1 || { \

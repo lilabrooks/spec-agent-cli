@@ -249,6 +249,11 @@ The Open Source target uses `.venv/bin/python` when that virtualenv exists, beca
 make snyk-open-source SNYK_PYTHON=/path/to/python
 ```
 
+Prefer `make snyk-open-source` over a bare `snyk test`. Snyk resolves the pip tree by running a `python` interpreter that must have the `requirements.txt` packages installed, and a bare invocation supplies neither the interpreter nor the packages:
+
+- `SNYK-CLI-0000` / `spawn python ENOENT` — no `python` on `PATH` (macOS ships only `python3`). Run `source .venv/bin/activate` first, or use `make snyk-open-source`, which passes `--command=.venv/bin/python`.
+- `SNYK-OS-PYTHON-0013` (Missing required packages) — the `python` being used has no runtime deps installed (the venv installs only `[dev]` by default). `make snyk-open-source` installs `requirements.txt` into the interpreter before scanning; an activated venv works too once those packages are installed.
+
 For dependency findings, update `pyproject.toml` first, then mirror the same package change in `requirements.txt`. If Snyk flags a vulnerable transitive dependency from an optional provider SDK, add a direct lower-bound constraint to the relevant extra and mirror it in `requirements.txt`; for example, the `openai` extra constrains `anyio>=4.4.0`, `h11>=0.16.0`, `idna>=3.15`, and `zipp>=3.19.1` to avoid vulnerable resolver choices through its transitive dependencies. For Snyk Code findings, change the source or tests directly. Use `snyk ignore` only for Open Source findings that have a documented reason and expiry; Snyk's local `.snyk` issue ignores do not apply to Snyk Code findings.
 
 ## Spec Workflow
