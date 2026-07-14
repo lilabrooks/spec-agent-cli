@@ -16,9 +16,9 @@ deciders: [Lila Brooks]
 
 Kind: utility
 
-Problem: Python developers building small-to-medium CLI tools want spec-driven, agent-assisted code generation without committing to one model vendor's SDK, API surface, or pricing.
+Problem: `claude-okf-repo-kit` needs a real Python CLI project to dogfood its workflows and a proven chassis for a kit-based template.
 
-Solution: The `agent` CLI — a developer describes a command-line tool as a plain Markdown spec and an AI agent, on whichever model vendor they choose, turns it into a working Python CLI. The repo ships both the generator and a starter scaffold worth forking.
+Solution: Use the `agent` CLI as a working dogfood project for enhancing [claude-okf-repo-kit](https://github.com/lilabrooks/claude-okf-repo-kit), while proving the chassis for a new template based on that kit, focused specifically on creating Python CLI apps.
 
 # Target state
 

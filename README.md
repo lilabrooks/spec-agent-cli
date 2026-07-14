@@ -13,12 +13,17 @@
 [![OKF docs validated](https://img.shields.io/badge/OKF%20docs-validated-brightgreen)](#quality-standard)
 [![specs & ADRs - included](https://img.shields.io/badge/specs%20%26%20ADRs-included-teal)](docs/specs/index.md)
 
-A Python 3.12+ starter project for building spec-driven CLI generators. It combines Markdown CLI specs, reusable agent skills, strict Python quality checks, and pluggable model providers without tying the application to one vendor, API, or model family.
+This repository exists to dogfood [claude-okf-repo-kit](https://github.com/lilabrooks/claude-okf-repo-kit) and provide the proven chassis for a new template based on that kit, focused specifically on creating Python CLI apps.
+
+## Project Objective
+
+The `agent` CLI is the current dogfood project and chassis. Its spec-driven workflow, reusable agent skills, safe file generation, provider-neutral model access, and strict quality gate are the patterns the template needs to prove.
 
 <details open>
 <summary><strong>📖 Table of Contents</strong></summary>
 
 - [What This Project Provides](#what-this-project-provides)
+- [Project Objective](#project-objective)
 - [Flow](#flow)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)

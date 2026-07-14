@@ -18,11 +18,11 @@ related: [SPEC-001, SPEC-002, SPEC-003, SPEC-004, SPEC-005, SPEC-006, SPEC-007]
 
 ## Objective
 
-Let a developer describe a command-line tool as a plain Markdown spec and have an AI agent — on whichever model vendor they choose — turn it into a real, working Python CLI. The repo ships both the generator (`agent`) and a starter scaffold worth forking: humans write specs, agents receive normalized context shaped by reusable skills, and the Python code handles loading, validation, and provider-neutral execution.
+Dogfood [claude-okf-repo-kit](https://github.com/lilabrooks/claude-okf-repo-kit) through a working Python CLI project, and provide the proven chassis for a new template based on that kit, focused specifically on creating Python CLI apps. The `agent` CLI is the current chassis: humans write specs, agents receive normalized context shaped by reusable skills, and the Python code handles loading, validation, and provider-neutral execution.
 
 ## Target user
 
-A Python developer building small-to-medium CLI tools who wants spec-driven, agent-assisted generation without committing to one model vendor's SDK, API surface, or pricing — including someone forking this repo as the starting point for their own tool.
+The kit maintainer and template author. They use this repo to exercise the kit and shape a Python CLI template from a working project.
 
 ## Core promises
 
