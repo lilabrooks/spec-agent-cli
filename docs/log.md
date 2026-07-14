@@ -17,6 +17,7 @@ Dated changes to the docs bundle, newest first.
 - Adopted claude-okf-repo-kit 0.3.0 via its `update-existing-repo` updater: installed `CLAUDE.md`, `.claude/` settings/hooks/skills, `scripts/okf`, `docs/okf-map.yml`, and `docs/GOAL.md`; stamped `kit_version` into `docs/index.md`; appended kit `.gitignore` entries. Existing docs, naming (`spec-NNN-*` / `adr-NNNN-*` prefixes), and indexes left untouched — the kit's brownfield tolerance (its ADRs 0018/0019) follows them in place.
 - Populated `docs/okf-map.yml` mappings from each spec's `components:` frontmatter plus the ADRs governing each area; no `layout:` block needed since the repo already uses the default tree.
 - Drafted `docs/GOAL.md` from SPEC-000 (objective, target state, acceptance criteria, non-goals) with an empty milestone backlog, pending owner review; filled the `CLAUDE.md` template brackets (master objective, `make check` verification commands).
+- Trimmed the `GOAL.md` milestone-mechanics boilerplate to a pointer at `CLAUDE.md` § Goal iteration, which both preload at session start; keeping the rules in one place.
 - Adoption inventory: all knowledge already lives in `docs/specs/` and `docs/adr/`; `guides/` and `notes/` are supporting material, and the repo-root `specs/` and `skills/` folders are buildable product input (bundled in the wheel), not governance docs — nothing was moved or reclassified.
 
 - Updated local Make targets to use `.venv/bin` quality tools when the repo virtualenv exists and to report missing coverage tooling clearly.

@@ -44,11 +44,8 @@ Per SPEC-000: no conversation state, no streaming/tool-use/structured-output API
 
 # Milestones
 
-Ordered backlog. When asked to continue without a specific task, Claude Code
-takes the first unchecked milestone. Check a milestone off only when its
-verification passes, and record progress in `docs/log.md`. When the backlog is
-empty, Claude Code runs a first-time-user acceptance pass, reports the goal
-met, and proposes candidate milestones; the owner chooses what gets added.
+Ordered backlog; selection, check-off, and goal-met mechanics per
+`CLAUDE.md` § Goal iteration.
 
 The backlog is empty as of the 2026-07-14 kit adoption: the repo is at its
 SPEC-000 target state and the success criteria pass. Candidate next milestones
