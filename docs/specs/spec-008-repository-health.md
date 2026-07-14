@@ -72,6 +72,8 @@ No tracked file may match a `.gitignore` pattern. This catches build and test ar
 
 - ruff lint and format checks pass with the configured rule set.
 - mypy passes in `strict` mode over the package.
+- Code-quality CI installs the optional Anthropic and OpenAI extras so mypy resolves the SDK type
+  modules used at provider boundaries (ADR-0011); shipped runtime dependencies remain empty.
 - pytest passes with branch coverage ≥ 70% (`fail_under = 70`).
 - CI runs the same gates on Python 3.12, 3.13, and 3.14; `make check-all` reproduces that matrix locally.
 

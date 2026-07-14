@@ -14,6 +14,9 @@ Dated changes to the docs bundle, newest first.
 
 ## 2026-07-14
 
+- Accepted ADR-0011 at the owner's direction and installed the optional Anthropic and OpenAI SDK
+  extras in code-quality CI so strict mypy can resolve provider type modules. This supersedes only
+  ADR-0004's CI dependency-free consequence; its zero shipped-runtime-dependency decision remains.
 - Added SPEC-008 invariant #5 "No committed build artifacts" and its guard in `tests/test_repo_health.py` (`test_no_tracked_files_match_gitignore`): fails if `git ls-files -i -c --exclude-standard` reports any tracked-but-ignored file, so a re-committed `.coverage` (or similar) is caught in CI. Skips outside a git checkout. Renumbered the former invariant #5 to #6.
 - Added `.github/dependabot.yml` covering the `github-actions` ecosystem only (weekly), to keep workflow action pins (`actions/checkout`, `actions/setup-python`) current. Not decision-shaped: no new runtime dependency (ADR-0004 stands), and the `pip` ecosystem is intentionally excluded — Snyk already covers dependency vulnerabilities and the optional extras use `>=` lower bounds.
 - Fixed mypy strict errors in `src/agent_cli/providers/openai.py` and `src/agent_cli/providers/anthropic.py` caused by updated vendor SDK type stubs: OpenAI messages are now built per-role as `list[ChatCompletionMessageParam]`, and the Anthropic `Messages.create` call uses explicit keyword arguments (two call shapes) instead of an untyped `dict[str, object]` expansion. Typing only — no behavior, contract, or spec change, so SPEC-003 and ADR-0003 stand as written; type-only imports sit under `TYPE_CHECKING`, preserving SPEC-003's deferred-SDK-import rule.
