@@ -10,7 +10,7 @@ deciders: [Lila Brooks]
 
 # Master objective
 
-Current state: The `agent` CLI is shipped and at its SPEC-000 target state — spec-driven, vendor-neutral CLI generation with Anthropic/OpenAI/echo providers, safe file writes, and pip/pipx installability, validated by a strict quality gate.
+Current state: This repo dogfoods [claude-okf-repo-kit](https://github.com/lilabrooks/claude-okf-repo-kit) and provides the proven chassis for a new template based on that kit, focused specifically on creating Python CLI apps. The shipped `agent` CLI is at its SPEC-000 target state: spec-driven, vendor-neutral CLI generation with Anthropic/OpenAI/echo providers, safe file writes, and pip/pipx installability, validated by a strict quality gate.
 
 Target state: Hold that state: keep the core promises in `docs/specs/spec-000-project-objective.md` intact while working the milestone backlog in `docs/GOAL.md` as the owner adds to it.
 
