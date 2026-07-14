@@ -62,7 +62,13 @@ The OKF-style documentation bundle must keep its structure and metadata intact:
 
 **Enforced by** `tests/test_repo_health.py`, which fails if an optional dependency is missing from `requirements.txt` or if `requirements.txt` contains an exact pin.
 
-### 5. Quality gates
+### 5. No committed build artifacts
+
+No tracked file may match a `.gitignore` pattern. This catches build and test artifacts — the `.coverage` database, caches, `dist/` output — that get committed once and then silently re-dirtied on every run. Untracking such a file (`git rm --cached`) and ignoring it is the fix.
+
+**Enforced by** `tests/test_repo_health.py`, which fails if `git ls-files -i -c --exclude-standard` reports any tracked-but-ignored file. Skipped when run outside a git checkout (e.g. against an installed wheel).
+
+### 6. Quality gates
 
 - ruff lint and format checks pass with the configured rule set.
 - mypy passes in `strict` mode over the package.
@@ -79,6 +85,6 @@ The OKF-style documentation bundle must keep its structure and metadata intact:
 
 ## Acceptance tests
 
-`tests/test_repo_health.py` — package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, Snyk scanner manifest synchronization, exact-pin prevention, spec validation, and skill validation.
+`tests/test_repo_health.py` — package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, Snyk scanner manifest synchronization, exact-pin prevention, no tracked files matching `.gitignore`, spec validation, and skill validation.
 
 `scripts/check-okf-docs.py` — validates OKF-style frontmatter, required docs bundle files, and local Markdown links. All checks must pass for `make check` to succeed.

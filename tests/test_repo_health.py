@@ -6,8 +6,12 @@ skills must pass their own validators.
 """
 
 import re
+import shutil
+import subprocess
 import tomllib
 from pathlib import Path
+
+import pytest
 
 import agent_cli
 from agent_cli.skills.loader import list_skills, load_skill, validate_skill
@@ -101,6 +105,28 @@ def test_scanner_requirements_mirror_optional_dependencies() -> None:
 def test_scanner_requirements_avoid_exact_pins() -> None:
     pinned = [line for line in scanner_requirements() if PINNED_REQUIREMENT.match(line)]
     assert not pinned, f"requirements.txt should use lower bounds, not exact pins: {pinned}"
+
+
+def test_no_tracked_files_match_gitignore() -> None:
+    """No committed file should match a .gitignore pattern.
+
+    Guards against build/test artifacts (e.g. the .coverage database) being
+    re-committed after they've been ignored. Skipped when run outside a git
+    checkout, such as against an installed wheel.
+    """
+    if shutil.which("git") is None or not (REPO_ROOT / ".git").exists():
+        pytest.skip("not a git checkout")
+    result = subprocess.run(
+        ["git", "ls-files", "-i", "-c", "--exclude-standard"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    tracked_but_ignored = result.stdout.split()
+    assert not tracked_but_ignored, (
+        f"tracked files match .gitignore (untrack with 'git rm --cached'): {tracked_but_ignored}"
+    )
 
 
 def test_bundled_specs_pass_validation() -> None:
