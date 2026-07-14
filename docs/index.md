@@ -1,5 +1,6 @@
 ---
 okf_version: "0.1"
+kit_version: "0.3.0"
 title: Documentation index
 type: index
 status: current
@@ -17,8 +18,10 @@ Bundle root for the `agent` CLI documentation. Changes to this bundle are record
 
 | Location | Contents |
 | --- | --- |
+| [GOAL.md](GOAL.md) | Goal, success criteria, and milestone backlog (kit adoption) |
 | [specs/](specs/index.md) | Component specifications: how the shipped code behaves |
 | [adr/](adr/index.md) | Architecture decision records: why the codebase is shaped this way |
+| [okf-map.yml](okf-map.yml) | Source-to-knowledge mapping used by `bash scripts/okf check-stale` |
 
 ## Supporting material
 

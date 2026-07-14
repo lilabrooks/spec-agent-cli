@@ -9,3 +9,8 @@ build/
 *.egg-info/
 .env
 .DS_Store
+.claude/settings.local.json
+CLAUDE.local.md
+.okf-kit-backups/
+.env.*
+!.env.example

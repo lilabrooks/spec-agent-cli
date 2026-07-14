@@ -1,0 +1,55 @@
+---
+type: Goal
+title: Project goal
+description: The goal, success criteria, and milestone backlog Claude Code iterates toward in this repo.
+tags: [goal, milestones]
+timestamp: 2026-07-14T00:00:00Z
+owner: Lila Brooks
+deciders: [Lila Brooks]
+---
+
+<!-- Drafted from docs/specs/spec-000-project-objective.md during the
+     2026-07-14 kit adoption. SPEC-000 remains the authoritative statement;
+     keep the two consistent. -->
+
+# Goal
+
+Kind: utility
+
+Problem: Python developers building small-to-medium CLI tools want spec-driven, agent-assisted code generation without committing to one model vendor's SDK, API surface, or pricing.
+
+Solution: The `agent` CLI — a developer describes a command-line tool as a plain Markdown spec and an AI agent, on whichever model vendor they choose, turns it into a working Python CLI. The repo ships both the generator and a starter scaffold worth forking.
+
+# Target state
+
+The `agent` command surface (`run`, `build`, `spec`, `skill`, `providers`) works end to end: Markdown spec and skill loading, validation, and rendering into agent context; provider adapters for Anthropic, OpenAI, and the local echo stub behind the one-method `LanguageModel` protocol; single-shot prompt → reply → optional safe file-write flows; installable via pip/pipx with default specs and skills shipped inside the wheel. See [spec-000-project-objective.md](specs/spec-000-project-objective.md) for the full core promises.
+
+# Success criteria
+
+On a clean machine with only Python 3.12+:
+
+- `pipx install` from the repo followed by `agent providers` and `agent run "hello"` succeeds with no credentials or network.
+- `agent build --spec <any-path>.md --apply --out-dir <dir>` with a real provider writes the generated files under `<dir>` and refuses to overwrite existing ones without `--force`.
+- `make check` passes: lint, strict type-check, tests with the 70% branch-coverage floor, and OKF docs validation.
+
+# Non-goals
+
+Per SPEC-000: no conversation state, no streaming/tool-use/structured-output APIs, no plugin discovery, no config files or `.env` loading, no agentic loop, not a hosted service or IDE integration.
+
+# Constraints
+
+- Governing docs: [docs/specs/](specs/index.md) (SPEC-000–008) and [docs/adr/](adr/index.md) (ADR-0001–0010); source-to-doc mapping in `docs/okf-map.yml`.
+- Zero runtime dependencies (ADR-0004); vendor SDKs are opt-in extras.
+- Python 3.12–3.14; mypy strict, ruff, pytest coverage floor per SPEC-008.
+
+# Milestones
+
+Ordered backlog. When asked to continue without a specific task, Claude Code
+takes the first unchecked milestone. Check a milestone off only when its
+verification passes, and record progress in `docs/log.md`. When the backlog is
+empty, Claude Code runs a first-time-user acceptance pass, reports the goal
+met, and proposes candidate milestones; the owner chooses what gets added.
+
+The backlog is empty as of the 2026-07-14 kit adoption: the repo is at its
+SPEC-000 target state and the success criteria pass. Candidate next milestones
+are proposed to the owner per the process above, not added here unilaterally.
