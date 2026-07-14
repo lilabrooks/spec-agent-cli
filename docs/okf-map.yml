@@ -116,6 +116,7 @@ mappings:
   - source: "tests/test_repo_health.py"
     docs:
       - "docs/specs/spec-008-repository-health.md"
+      - "docs/adr/adr-0012-dual-agent-config-parity.md"
 
   - source: "scripts/check-okf-docs.py"
     docs:
@@ -130,8 +131,10 @@ mappings:
   - source: ".agents/**"
     docs:
       - "docs/specs/spec-008-repository-health.md"
+      - "docs/adr/adr-0012-dual-agent-config-parity.md"
 
   - source: ".codex/**"
     docs:
       - "docs/specs/spec-008-repository-health.md"
       - "docs/adr/adr-0010-okf-docs-validation.md"
+      - "docs/adr/adr-0012-dual-agent-config-parity.md"

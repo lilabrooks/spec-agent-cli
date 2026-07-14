@@ -14,6 +14,7 @@ Dated changes to the docs bundle, newest first.
 
 ## 2026-07-14
 
+- Proposed ADR-0012 and added a repo-health guard for parity between the two agent stacks. The Codex stack (`AGENTS.md`, `.codex/hooks/`, `.agents/skills/`) mirrors the Claude stack, but nothing enforced that the shared lifecycle hooks stay identical or that the `okf-*` skills stay paired — SPEC-008 invariant #7 checked each side in isolation only. `tests/test_repo_health.py` now asserts `.claude/hooks/*.sh` are byte-identical to their `.codex/hooks/` mirrors and that the `okf-*` skill set matches across `.claude/skills/` and `.agents/skills/`; both checks skip when the Codex stack is absent, since Codex is optional (a Claude-only checkout stays green). Skill *contents* are deliberately not compared — the `CLAUDE.md`⇄`AGENTS.md` / `.claude`⇄`.codex` substitutions are intended. Updated SPEC-008 invariant #7 with the parity clause, mapped ADR-0012 in `docs/okf-map.yml`. ADR-0012 is `status: proposed` — the dual-stack decision was Codex's to introduce; the ADR records the invariant and names the root-cause finding to carry back to the kit (its updater does not sync second-agent mirrors). Verified: `make check`.
 - Added Codex-native repository guidance, OKF workflow skills, and portable lifecycle hooks under
   `AGENTS.md`, `.agents/`, and `.codex/`; added matching OKF mappings and local-settings ignores.
   This mirrors the existing Claude workflow without changing the shipped CLI.

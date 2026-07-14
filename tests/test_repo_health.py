@@ -5,6 +5,7 @@ declared version must agree everywhere it appears, and the bundled specs and
 skills must pass their own validators.
 """
 
+import filecmp
 import re
 import shutil
 import subprocess
@@ -126,6 +127,52 @@ def test_no_tracked_files_match_gitignore() -> None:
     tracked_but_ignored = result.stdout.split()
     assert not tracked_but_ignored, (
         f"tracked files match .gitignore (untrack with 'git rm --cached'): {tracked_but_ignored}"
+    )
+
+
+def test_codex_hooks_match_claude_hooks() -> None:
+    """The Codex hook mirror must stay byte-identical to the Claude hooks.
+
+    The lifecycle hooks enforce the same OKF guardrails regardless of which
+    agent runs, so a hook present in both `.claude/hooks/` and `.codex/hooks/`
+    must match byte for byte (ADR-0012, SPEC-008 invariant #7). The Codex stack
+    is optional: when `.codex/hooks/` is absent the check no-ops, keeping a
+    Claude-only checkout green.
+    """
+    claude_hooks = REPO_ROOT / ".claude" / "hooks"
+    codex_hooks = REPO_ROOT / ".codex" / "hooks"
+    if not codex_hooks.is_dir():
+        pytest.skip("no Codex hook mirror in this repo")
+    mismatched: list[str] = []
+    for claude_hook in sorted(claude_hooks.glob("*.sh")):
+        codex_hook = codex_hooks / claude_hook.name
+        if codex_hook.is_file() and not filecmp.cmp(claude_hook, codex_hook, shallow=False):
+            mismatched.append(claude_hook.name)
+    assert not mismatched, (
+        "Codex hooks have drifted from the Claude source of truth "
+        f"(re-sync from .claude/hooks/): {mismatched}"
+    )
+
+
+def test_codex_skills_pair_with_claude_skills() -> None:
+    """Every `okf-*` skill must exist in both agent stacks when both are present.
+
+    The playbooks and skills are deliberately adapted per agent, so their
+    contents differ; the *set* of skills must stay paired so a capability added
+    to one stack is not silently missing from the other (ADR-0012, SPEC-008
+    invariant #7). The Codex stack is optional: when `.agents/skills/` is absent
+    the check no-ops.
+    """
+    claude_skills = REPO_ROOT / ".claude" / "skills"
+    codex_skills = REPO_ROOT / ".agents" / "skills"
+    if not codex_skills.is_dir():
+        pytest.skip("no Codex skill mirror in this repo")
+    claude_names = {p.name for p in claude_skills.glob("okf-*") if p.is_dir()}
+    codex_names = {p.name for p in codex_skills.glob("okf-*") if p.is_dir()}
+    assert claude_names == codex_names, (
+        "okf-* skills are not paired across the two agent stacks "
+        f"(only in .claude: {sorted(claude_names - codex_names)}; "
+        f"only in .agents: {sorted(codex_names - claude_names)})"
     )
 
 

@@ -89,8 +89,21 @@ Repository guidance lives in `AGENTS.md`, Codex workflow skills live under `.age
 Codex lifecycle hooks live under `.codex/`. Hook commands resolve scripts from the Git root rather
 than a developer-specific absolute path. Personal Codex overrides remain ignored.
 
+The Codex stack is an optional mirror of the Claude stack (`CLAUDE.md`, `.claude/hooks/`,
+`.claude/skills/okf-*`), which is the source of truth. When the Codex stack is present, two parity
+invariants hold (ADR-0012):
+
+- **Hooks are byte-identical.** A lifecycle hook present in both `.claude/hooks/` and `.codex/hooks/`
+  must match byte for byte, so both agents enforce the same guardrails.
+- **Skills stay paired.** The set of `okf-*` skill directories under `.claude/skills/` and
+  `.agents/skills/` must match. Contents are not compared — each skill is deliberately adapted to
+  its agent (`CLAUDE.md` ⇄ `AGENTS.md`, `.claude` ⇄ `.codex` paths).
+
+Both parity checks no-op when the Codex stack is absent, so a Claude-only checkout stays green.
+
 **Verified by** JSON parsing of `.codex/hooks.json`, shell syntax checks for `.codex/hooks/*.sh`,
-and the repository quality gate.
+byte-comparison of the mirrored hooks, presence-parity of the `okf-*` skills across both stacks, and
+the repository quality gate.
 
 ## Advisory (not hard-enforced)
 
@@ -100,6 +113,6 @@ and the repository quality gate.
 
 ## Acceptance tests
 
-`tests/test_repo_health.py` — package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, Snyk scanner manifest synchronization, exact-pin prevention, no tracked files matching `.gitignore`, spec validation, and skill validation.
+`tests/test_repo_health.py` — package/pyproject agreement, CHANGELOG agreement, docs references, doc frontmatter versions, Snyk scanner manifest synchronization, exact-pin prevention, no tracked files matching `.gitignore`, Claude/Codex hook byte-parity and `okf-*` skill pairing (skipped when the Codex stack is absent), spec validation, and skill validation.
 
 `scripts/check-okf-docs.py` — validates OKF-style frontmatter, required docs bundle files, and local Markdown links. All checks must pass for `make check` to succeed.
