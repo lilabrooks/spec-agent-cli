@@ -111,6 +111,7 @@ mappings:
   - source: ".github/workflows/**"
     docs:
       - "docs/specs/spec-008-repository-health.md"
+      - "docs/adr/adr-0011-provider-sdks-in-ci.md"
 
   - source: "tests/test_repo_health.py"
     docs:
