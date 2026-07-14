@@ -121,3 +121,17 @@ mappings:
     docs:
       - "docs/specs/spec-008-repository-health.md"
       - "docs/adr/adr-0010-okf-docs-validation.md"
+
+  - source: "AGENTS.md"
+    docs:
+      - "docs/specs/spec-000-project-objective.md"
+      - "docs/specs/spec-008-repository-health.md"
+
+  - source: ".agents/**"
+    docs:
+      - "docs/specs/spec-008-repository-health.md"
+
+  - source: ".codex/**"
+    docs:
+      - "docs/specs/spec-008-repository-health.md"
+      - "docs/adr/adr-0010-okf-docs-validation.md"

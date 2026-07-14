@@ -15,6 +15,10 @@ components:
   - CHANGELOG.md
   - Makefile
   - .github/workflows/code-quality.yml
+  - AGENTS.md
+  - .agents/skills
+  - .codex/hooks.json
+  - .codex/hooks
 tags: [health, versioning, quality, ci, security]
 related: [SPEC-000, SPEC-005, ADR-0004, ADR-0010]
 ---
@@ -78,6 +82,15 @@ No tracked file may match a `.gitignore` pattern. This catches build and test ar
 - CI runs the same gates on Python 3.12, 3.13, and 3.14; `make check-all` reproduces that matrix locally.
 
 **Enforced by** `make check` locally and the GitHub Actions workflows on every push.
+
+### 7. Agent configuration stays portable
+
+Repository guidance lives in `AGENTS.md`, Codex workflow skills live under `.agents/skills/`, and
+Codex lifecycle hooks live under `.codex/`. Hook commands resolve scripts from the Git root rather
+than a developer-specific absolute path. Personal Codex overrides remain ignored.
+
+**Verified by** JSON parsing of `.codex/hooks.json`, shell syntax checks for `.codex/hooks/*.sh`,
+and the repository quality gate.
 
 ## Advisory (not hard-enforced)
 

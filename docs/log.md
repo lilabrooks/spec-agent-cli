@@ -14,6 +14,9 @@ Dated changes to the docs bundle, newest first.
 
 ## 2026-07-14
 
+- Added Codex-native repository guidance, OKF workflow skills, and portable lifecycle hooks under
+  `AGENTS.md`, `.agents/`, and `.codex/`; added matching OKF mappings and local-settings ignores.
+  This mirrors the existing Claude workflow without changing the shipped CLI.
 - Accepted ADR-0011 at the owner's direction and installed the optional Anthropic and OpenAI SDK
   extras in code-quality CI so strict mypy can resolve provider type modules. This supersedes only
   ADR-0004's CI dependency-free consequence; its zero shipped-runtime-dependency decision remains.
