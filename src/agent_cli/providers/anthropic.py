@@ -1,4 +1,9 @@
+from typing import TYPE_CHECKING
+
 from agent_cli.core.models import CompletionRequest, CompletionResponse
+
+if TYPE_CHECKING:
+    from anthropic.types import MessageParam
 
 DEFAULT_MODEL = "claude-opus-4-8"
 DEFAULT_MAX_TOKENS = 1024
@@ -23,21 +28,31 @@ class AnthropicLanguageModel:
         system = "\n\n".join(
             message.content for message in request.messages if message.role == "system"
         )
-        messages = [
-            {"role": message.role, "content": message.content}
-            for message in request.messages
-            if message.role in ("user", "assistant")
-        ]
+        # Built with per-role branches so each dict matches the MessageParam
+        # role literal ("user" | "assistant"); a shared dict[str, str] does not.
+        messages: list[MessageParam] = []
+        for message in request.messages:
+            if message.role == "user":
+                messages.append({"role": "user", "content": message.content})
+            elif message.role == "assistant":
+                messages.append({"role": "assistant", "content": message.content})
 
-        kwargs: dict[str, object] = {
-            "model": self._model,
-            "max_tokens": self._max_tokens,
-            "messages": messages,
-        }
+        # Two literal call shapes instead of a **kwargs expansion: the SDK's
+        # overloads don't accept an untyped dict, and the "no system prompt"
+        # contract is that the kwarg is absent, not None.
         if system:
-            kwargs["system"] = system
-
-        response = client.messages.create(**kwargs)
+            response = client.messages.create(
+                model=self._model,
+                max_tokens=self._max_tokens,
+                messages=messages,
+                system=system,
+            )
+        else:
+            response = client.messages.create(
+                model=self._model,
+                max_tokens=self._max_tokens,
+                messages=messages,
+            )
         text = "".join(block.text for block in response.content if block.type == "text")
         usage = {
             "input_tokens": response.usage.input_tokens,

@@ -1,4 +1,9 @@
+from typing import TYPE_CHECKING
+
 from agent_cli.core.models import CompletionRequest, CompletionResponse
+
+if TYPE_CHECKING:
+    from openai.types.chat import ChatCompletionMessageParam
 
 DEFAULT_MODEL = "gpt-4o-mini"
 DEFAULT_MAX_TOKENS = 1024
@@ -20,11 +25,16 @@ class OpenAILanguageModel:
         import openai  # noqa: PLC0415 (kept optional; see module docstring)
 
         client = openai.OpenAI()
-        messages = [
-            {"role": message.role, "content": message.content}
-            for message in request.messages
-            if message.role in ("system", "user", "assistant")
-        ]
+        # Built with per-role branches so each dict matches its member of the
+        # ChatCompletion*MessageParam union (a shared dict[str, str] does not).
+        messages: list[ChatCompletionMessageParam] = []
+        for message in request.messages:
+            if message.role == "system":
+                messages.append({"role": "system", "content": message.content})
+            elif message.role == "user":
+                messages.append({"role": "user", "content": message.content})
+            elif message.role == "assistant":
+                messages.append({"role": "assistant", "content": message.content})
 
         response = client.chat.completions.create(
             model=self._model,
