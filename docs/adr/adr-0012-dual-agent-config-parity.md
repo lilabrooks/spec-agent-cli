@@ -99,6 +99,13 @@ re-sync the Codex mirror from `.claude/`, not the reverse.
   claude-okf-repo-kit (ship this parity test with the kit, or teach the updater
   to sync mirrors).
 
+Update (2026-07-21): the root-cause finding was harvested — kit 0.3.4 shipped
+its ADR 0021, and this repo now declares `mirrors: [.codex/hooks]` in
+`docs/okf-map.yml`, so the kit's safe updater syncs the hook mirrors on every
+upgrade. The repo-side checks stay per the kit's own recommendation
+(belt-and-suspenders for hand edits and undeclared mirrors), and skill-set
+pairing remains repo-enforced only — the kit never syncs adapted skills.
+
 ## Rollback / revisit trigger
 
 Revisit if the Codex stack is removed (drop the checks and invariant clause), if

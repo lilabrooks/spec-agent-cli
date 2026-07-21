@@ -12,6 +12,10 @@ tags: [documentation, log]
 
 Dated changes to the docs bundle, newest first.
 
+## 2026-07-21
+
+- Upgraded claude-okf-repo-kit 0.3.0 → 0.3.7 via `update-existing-repo` (backup under `.okf-kit-backups/20260721T212444Z/`). Refreshed in place by provenance: `scripts/okf`, `.claude/hooks/check-okf-version.sh` (now reports unresolved kit candidates, empty maps, and undeclared hook mirrors), `.claude/skills/okf-kit-upgrade` and `okf-adopt`; new `.claude/skills/okf-second-agent` skill installed; `kit_version` restamped in `docs/index.md`. Candidate review: merged the new kit paragraphs from `CLAUDE.2.md` into the live `CLAUDE.md` (expanded skills list, second-agent port rules, unresolved-candidate policy, `.env.example` loader-statement rule) while keeping all owner-filled content, and adopted the `mirrors:` block from `okf-map.2.yml` into the live map — `docs/okf-map.yml` now declares `mirrors: [.codex/hooks]` (kit ADR 0021) so future upgrades sync the hook mirrors mechanically; both candidates then deleted. Codex stack re-paired per ADR-0012: `.codex/hooks/check-okf-version.sh` re-synced byte-identical, `.agents/skills/okf-adopt` and `okf-second-agent` copied verbatim, `okf-kit-upgrade` re-adapted with its `.codex/hooks.json` substitution. Brought `AGENTS.md` up to the kit's new port conventions from the `okf-second-agent` skill: `@` imports replaced with explicit session-start reads (Codex never resolved them), env-file denial stated honestly as policy-only for Codex, self-describing port paragraph added, plus the same new kit paragraphs as `CLAUDE.md`. Updated proposed ADR-0012 with a dated note: its root-cause finding shipped as kit ADR 0021, the repo-side parity checks stay as belt-and-suspenders. Verified: `make check` (68 tests), `bash scripts/okf check-stale` clean, JSON/`bash -n` syntax checks on both stacks.
+
 ## 2026-07-14
 
 - Consolidated the README purpose into its opening paragraph and removed the repeated `Project Objective` section. Presentation only; SPEC-000 remains current.

@@ -81,13 +81,15 @@ Brownfield alternative: a repo that already keeps its specs or ADRs elsewhere po
 # Agent config (committed to the repo)
 
 - `.claude/settings.json` — shared project settings: the guardrail hooks plus permission rules that deny reading local `.env` files. Committed.
-- `.claude/skills/okf-*/SKILL.md` — kit-installed workflow skills (goal interview, acceptance pass, ADR review, kit upgrade) carrying the expanded procedures the one-liners in this file point to. Committed. If a skill doesn't load, the resident rule still binds — proceed from the one-liner here.
+- `.claude/skills/okf-*/SKILL.md` — kit-installed workflow skills (goal interview, acceptance pass, ADR review, kit upgrade, adoption pass, second-agent port) carrying the expanded procedures the one-liners in this file point to. Committed. If a skill doesn't load, the resident rule still binds — proceed from the one-liner here.
 - `.claude/hooks/check-docs-sync.sh` — Stop hook, invoked via `bash` so no executable bit is needed. Committed. Don't move, rename, or disable it; if it blocks a stop, do the doc update it asks for.
 - `.claude/hooks/check-okf-version.sh` — SessionStart hook, invoked via `bash`. Committed. Reports OKF spec version drift; act per the OKF version policy above.
 - `scripts/okf` — repo-local OKF helper command. Committed. Use it for stale mapping checks, spec drafts, and ADR suggestions.
 - `docs/okf-map.yml` — source-to-knowledge mapping used by `scripts/okf check-stale`. Committed.
 - `.claude/settings.local.json` — personal overrides only. Never commit it.
 - `CLAUDE.local.md` — personal per-repo memory. Never commit it.
+
+Adding a second agent (Codex CLI, for example) beside Claude Code is a guided port, not a copy — the `okf-second-agent` skill carries the full procedure. The binding rules if the skill doesn't load: the ported playbook (`AGENTS.md`) replaces `@` imports with explicit session-start reads and states honestly which guardrails are policy-only for that agent (the env-file read denial is mechanical only in Claude Code); hook copies stay byte-identical to `.claude/hooks/` and their directory is declared in a top-level `mirrors:` list in `docs/okf-map.yml` so the safe updater syncs them on kit upgrades; adapted skills stay paired with the `.claude/skills/` set by hand; and a parity check belongs in this repo's own test gate.
 
 During bootstrap, ensure `.gitignore` contains these entries (the same set the installers append and `verify-install` requires — `!.env.example` keeps the sample env file trackable):
 
@@ -118,6 +120,8 @@ Never modify spec or ADR content as part of a version migration; only formatting
 # Kit version policy
 
 The same SessionStart hook also compares `kit_version` in `docs/index.md` — stamped by the kit installers — against the kit's published `VERSION` on the source kit's main branch. When it reports drift, tell me and recommend the safe updater, `scripts/update-existing-repo` from an up-to-date kit clone (the `okf-kit-upgrade` skill carries the walkthrough): it refreshes provably unedited kit files in place after a backup and writes same-folder numbered candidates for everything else; reviewing candidates is my decision. If `docs/index.md` carries no `kit_version`, the hook stays silent and this policy is inactive.
+
+The same hook also reports numbered kit candidates (`CLAUDE.2.md` and similar) still unresolved from an install or upgrade. They are inactive review copies no agent loads: remind me to merge what I want into the live files and delete each candidate rather than resolving them yourself, and never commit one unresolved.
 
 # OKF helper commands
 
@@ -159,7 +163,7 @@ Tests and verification:
 Security:
 
 - Never write secrets — API keys, tokens, passwords, private keys, connection strings — into tracked files. Read them from the environment, and before creating an env or credentials file, confirm `.gitignore` covers it.
-- Document required and optional environment variables in a committed `.env.example` holding placeholder values only; real values live in the git-ignored `.env`. The installers ignore `.env` and `.env.*` while keeping `.env.example` trackable.
+- Document required and optional environment variables in a committed `.env.example` holding placeholder values only; real values live in the git-ignored `.env`. The installers ignore `.env` and `.env.*` while keeping `.env.example` trackable. State in `.env.example` how the stack loads `.env` — and when nothing does, say so and show the export step, because "copy to `.env`" instructions for a stack with no loader fail silently.
 - The shipped settings deny reading `.env` files so secrets stay out of conversation context. Never remove, weaken, or work around that denial; if a task seems to require reading `.env`, stop and ask me.
 - Treat changes touching auth, sessions, input parsing, file paths, network exposure, crypto, or permissions as security-sensitive: validate input at trust boundaries, use parameterized queries, grant least privilege, and run `bash scripts/okf adr-suggest`; when it flags the change, record the decision as a proposed ADR.
 - New runtime dependencies are decision-shaped: the proposed ADR names the alternatives considered and the maintenance and security tradeoff.
