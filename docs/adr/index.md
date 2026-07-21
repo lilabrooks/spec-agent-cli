@@ -25,6 +25,6 @@ Decisions that shaped this codebase, recorded after the fact from the shipped co
 | [ADR-0009](adr-0009-safe-by-default-build-writes.md) | Safe-by-default build writes: plan first, no silent overwrite, no path escape | accepted |
 | [ADR-0010](adr-0010-okf-docs-validation.md) | Validate OKF docs with a repo-local stdlib script | accepted |
 | [ADR-0011](adr-0011-provider-sdks-in-ci.md) | Install optional provider SDKs in code-quality CI | accepted |
-| [ADR-0012](adr-0012-dual-agent-config-parity.md) | Guard parity between the optional Codex stack and the Claude stack | proposed |
+| [ADR-0012](adr-0012-dual-agent-config-parity.md) | Guard parity between the optional Codex stack and the Claude stack | accepted |
 
 The component-level behavior these decisions produce is specified in [docs/specs/](../specs/index.md).

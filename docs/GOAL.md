@@ -38,7 +38,7 @@ Per SPEC-000: no conversation state, no streaming/tool-use/structured-output API
 
 # Constraints
 
-- Governing docs: [docs/specs/](specs/index.md) (SPEC-000–008) and [docs/adr/](adr/index.md) (ADR-0001–0010); source-to-doc mapping in `docs/okf-map.yml`.
+- Governing docs: [docs/specs/](specs/index.md) (SPEC-000–008) and [docs/adr/](adr/index.md) (ADR-0001–0012); source-to-doc mapping in `docs/okf-map.yml`.
 - Zero runtime dependencies (ADR-0004); vendor SDKs are opt-in extras.
 - Python 3.12–3.14; mypy strict, ruff, pytest coverage floor per SPEC-008.
 
