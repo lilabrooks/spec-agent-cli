@@ -9,6 +9,13 @@
 # docs/adr, stamp in docs/index.md); only filename prefixes differ, which the
 # kit helpers tolerate (kit ADR 0019).
 
+# Declared hook mirrors (kit ADR 0021): the Codex stack keeps byte-identical
+# copies of the two kit hooks; declaring the directory here lets the kit's
+# safe updater sync them on upgrades. Hooks only — the adapted skills in
+# .agents/skills stay owner-managed and paired by hand (repo ADR-0012).
+mirrors:
+  - .codex/hooks
+
 mappings:
   - source: "src/agent_cli/cli.py"
     docs:
