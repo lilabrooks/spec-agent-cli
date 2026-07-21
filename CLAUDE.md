@@ -14,7 +14,7 @@ Current state: The `agent` CLI is shipped and at its SPEC-000 target state — s
 
 Target state: Hold that state: keep the core promises in `docs/specs/spec-000-project-objective.md` intact while working the milestone backlog in `docs/GOAL.md` as the owner adds to it.
 
-Constraints: `docs/specs/` SPEC-000–008 and `docs/adr/` ADR-0001–0010 (all accepted); zero runtime dependencies (ADR-0004); safe-by-default writes (ADR-0009).
+Constraints: `docs/specs/` SPEC-000–008 and `docs/adr/` ADR-0001–0012 (all accepted); zero runtime dependencies (ADR-0004); safe-by-default writes (ADR-0009).
 
 Done when: `make check` passes (ruff, mypy strict, pytest with the 70% branch-coverage floor, `scripts/check-okf-docs.py`) and `bash scripts/okf check-stale` is clean.
 

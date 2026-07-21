@@ -2,7 +2,7 @@
 id: ADR-0012
 title: Guard parity between the Claude and Codex agent stacks
 type: adr
-status: proposed
+status: accepted
 date: 2026-07-14
 owner: Lila Brooks
 deciders: [Lila Brooks]
@@ -15,7 +15,7 @@ related: [SPEC-008, ADR-0010]
 
 ## Status
 
-Proposed (authored per the decision policy; awaiting owner review)
+Accepted (2026-07-21, at the owner's direction; authored and implemented 2026-07-14 per the propose-then-implement policy)
 
 ## Context
 
